@@ -33,7 +33,13 @@
                         <x-input-error :messages="$errors->get('description')" class="mt-2" />
                     </div>
 
-                    <x-primary-button>{{ __('Save') }}</x-primary-button>
+                    <div class="col-span-3 mt-6 flex gap-3">
+                        <a href="javascript:history.back()"
+                        class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
+                            <span>{{ __('Cancel') }}</span>
+                        </a>
+                        <x-primary-button>{{ __('Save') }}</x-primary-button>
+                    </div>
                 </form>
             </div>
         </div>

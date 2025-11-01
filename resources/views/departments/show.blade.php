@@ -29,7 +29,7 @@
                     @endif
 
                     <div class="col-span-3 mt-6 flex gap-3">
-                        <a href="{{ route('departments.index') }}"
+                        <a href="javascript:history.back()"
                         class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
                             <span>{{ __('Back') }}</span>
                         </a>

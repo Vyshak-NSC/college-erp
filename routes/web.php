@@ -3,6 +3,8 @@
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaffController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -10,7 +12,8 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $users = User::all();
+    return view('dashboard', compact('users'));
 })->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -22,6 +25,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function() {
     Route::resource('departments', DepartmentController::class);
     Route::resource('courses', CourseController::class);
+    Route::resource('staffs', StaffController::class);
 });
 
 require __DIR__.'/auth.php';

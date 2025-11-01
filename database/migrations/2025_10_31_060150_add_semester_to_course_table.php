@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('courses', function (Blueprint $table) {
-            $table->unsignedTinyInteger('semester');
+            $table->unsignedTinyInteger('semester')->default(1);
         });
     }
 
