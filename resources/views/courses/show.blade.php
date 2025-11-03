@@ -14,6 +14,9 @@
                     <span class="col-span-1 font-semibold">{{ __('Code:') }}</span>
                     <span class="col-span-2">{{ $course->code }}</span>
 
+                    <span class="col-span-1 font-semibold">{{ __('Program:') }}</span>
+                    <span class="col-span-2">{{ $course->program->name }}</span>
+
                     <span class="col-span-1 font-semibold">{{ __('Department:') }}</span>
                     <span class="col-span-2">{{ $course->department->name }}</span>
 

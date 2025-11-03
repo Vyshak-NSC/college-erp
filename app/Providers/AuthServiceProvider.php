@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Staff;
 use App\Models\User;
+use App\Models\Staff;
 use App\Models\Course;
+use App\Models\Program;
 use App\Models\Department;
+
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -100,6 +102,31 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('delete-staff', function (User $user, Staff $staff) {
+            return $user->role === 'admin';
+        });
+        
+        
+        // ---------- Program ----------
+        Gate::define('create-program', function(User $user){
+            return $user->role === 'admin';
+        });
+
+        Gate::define('view-program', function (User $user, Program $program){
+            if($user->role === 'admin'){
+                return true;
+            }
+            return $user->department_id === $program->department_id;
+        });
+
+        Gate::define('edit-program', function (User $user, Program $program) {
+            return $user->role === 'admin';
+        });
+
+        Gate::define('update-program', function (User $user, Program $program) {
+            return $user->role === 'admin';
+        });
+
+        Gate::define('delete-program', function (User $user, Program $program) {
             return $user->role === 'admin';
         });
     }

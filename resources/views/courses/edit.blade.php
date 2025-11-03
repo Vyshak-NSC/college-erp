@@ -32,20 +32,33 @@
 
                     <!-- Department -->
                     <div class="mb-4">
-                        <x-input-label for="code" :value="__('Department')" />
+                        <x-input-label for="department" :value="__('Department')" />
                         <select name="department_id" id="department" class="block w-full mt-1  shadow-sm rounded-md
                                                                    border-gray-300 dark:border-gray-700 
                                                                    dark:bg-gray-900 dark:text-gray-300 
                                                                    focus:border-indigo-500 dark:focus:border-indigo-600 
                                                                    focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">--Select a Department--</option>
+                            <option value="">-- Select a Department --</option>
                             @foreach ($departments as $department)
-                                <option value="{{ $department->id }}" @selected(old('department_id',$course->department_id) === $department->id)>
+                                <option value="{{ $department->id }}" @selected(old('department_id',$course->department->id) === $department->id)>
                                     {{ $department->name }}
                                 </option>
                             @endforeach
                         </select>
                         <x-input-error :messages="$errors->get('department')" class="mt-2" />
+                    </div>
+
+                    <!-- Program -->
+                    <div class="mb-4">
+                        <x-input-label for="program" :value="__('Program')" />
+                        <select name="program_id" id="programs" class="block w-full mt-1  shadow-sm rounded-md
+                                                                   border-gray-300 dark:border-gray-700 
+                                                                   dark:bg-gray-900 dark:text-gray-300 
+                                                                   focus:border-indigo-500 dark:focus:border-indigo-600 
+                                                                   focus:ring-indigo-500 dark:focus:ring-indigo-600">
+                            <option value="">-- Select a Program --</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('program')" class="mt-2" />
                     </div>
 
                     <!-- Semester -->
@@ -58,11 +71,7 @@
                                                             focus:border-indigo-500 dark:focus:border-indigo-600 
                                                             focus:ring-indigo-500 dark:focus:ring-indigo-600">
                             <option value="">--Select Semester--</option>
-                            @for ($i=1;$i<9;$i++){
-                                <option value="{{ $i }}" @selected($course->semester===$i)>{{ $i }}</option>
-                            }
-                            
-                            @endfor
+                            <option>{{ $course->program }}</option>
                         </select> 
                         <x-input-error :messages="$errors->get('semester')" class="mt-2" />
                     </div>
@@ -103,3 +112,42 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    const PROGRAMS = @json($departments->pluck('programs')->flatten());
+    const CURR_DEPT = {{ $course->department->id }}
+    const CURR_PROGRAM = {{ $course->program_id }}
+    $(document).ready(function () {
+        // Set program list
+        $('#department').change(function(){
+            let dept_id = parseInt($(this).val());
+            let program_select = $('#programs');
+            let program_list = PROGRAMS.filter(program => program.department_id === dept_id);
+
+            program_select.empty().append('<option value="">--Select Program--</option> ')
+
+            $.each(program_list,(index,program) =>{
+                program_select.append(`
+                    <option value='${program.id}' data-total-semesters=${program.total_semesters}>${program.name}</option> 
+                `)
+            })
+        })
+
+        // Set semester limit
+        $('#programs').change(function(){
+            let sems = $(this).find(':selected').data('total-semesters');
+            let sem_options = $('#semester')
+            sem_options.empty().append(`
+                <option value="">--Select Semester--</option>
+            `);
+            for(let i = 1; i< sems+1; i++){
+                sem_options.append(`
+                    <option value="${i}" ${i === {{ $course->semester }} ? 'selected':''} >${i}</option>
+                `)
+            }
+        })
+
+        $('#department').val(CURR_DEPT).trigger('change')
+        $('#programs').val(CURR_PROGRAM).trigger('change')        
+    })
+</script>

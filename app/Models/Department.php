@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Course;
+use App\Models\Program;
 
 class Department extends Model
 {
@@ -14,7 +15,15 @@ class Department extends Model
         return $this->hasMany(User::class);
     }
 
+    public function programs(){
+        return $this->hasMany(Program::class);
+    }
+    
     public function courses(){
-        return $this->hasMany(Course::class);
+        return $this->hasManyThrough(Course::class, Program::class);
+    }
+
+    public function staff(){
+        return $this->hasMany(Staff::class);
     }
 }

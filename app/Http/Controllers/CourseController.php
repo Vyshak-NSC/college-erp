@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Department;
+use App\Models\Program;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -22,7 +23,9 @@ class CourseController extends Controller
      */
     public function create()
     {
-        return view('courses.create');
+        $departments = Department::with('programs')->get(['name','id']);
+
+        return view('courses.create', compact('departments'));
     }
 
     /**
@@ -30,15 +33,14 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create-courses');
-
+        $this->authorize('create-course');
         $validated=$request->validate([
             'name'=>'required|max:255|unique:courses,name',
             'code'=>'required|max:50|unique:courses,code',
             'credits'=>'required|integer|min:1',
-            'department_id'=>'required|integer|exists:departments,id',
             'semester'=>'required|integer|min:1|max:8',
-            'description'=>'nullable|string'
+            'description'=>'nullable|string',
+            'program_id'=>'required|integer|exists:programs,id'
         ]);
 
         Course::create($validated);
@@ -74,9 +76,9 @@ class CourseController extends Controller
             'name'=>'required|max:255|unique:courses,name,'. $course->id,
             'code'=>'required|max:50|unique:courses,code,'. $course->id,
             'credits'=>'required|integer|min:1',
-            'department_id'=>'required|integer|exists:departments,id',
             'semester'=>'required|integer|min:1|max:8',
-            'description'=>'nullable|string'
+            'description'=>'nullable|string',
+            'program_id'=>'required|integer|exists:programs,id'
         ]);
 
         $course->update($validated);

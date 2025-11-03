@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\Department;
+use App\Models\Program;
 use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-    protected $fillable = ['name','code','description','credits','department_id','semester'];
+    protected $fillable = ['name','code','description','credits','semester','program_id'];
 
-    public function department(){
-        return $this->belongsTo(Department::class);
+    public function getDepartmentAttribute(){
+        return $this->program->department;
+    }
+
+    public function program(){
+        return $this->belongsTo(Program::class);
     }
 }

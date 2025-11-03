@@ -45,7 +45,7 @@
                                     <td class="p-3">{{ $course->code }}</td>
                                     <td class="p-3">{{ $course->name }}</td>
                                     <td class="p-3">{{ $course->credits }}</td>
-                                    <td class="p-3">{{ $course->department->name }}</td>
+                                    <td class="p-3">{{ $course->program?->department?->name }}</td>
                                     <td class="p-3">{{ $course->semester }}</td>
                                     <td class="p-3 flex gap-3 justify-center">
                                         <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>
