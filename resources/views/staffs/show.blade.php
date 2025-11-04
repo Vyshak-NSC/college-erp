@@ -13,16 +13,16 @@
 
                 <div class="grid grid-cols-3 gap-y-3 gap-x-2">
                     <span class="col-span-1 font-semibold">{{ __('Employee ID:') }}</span>
-                    <span class="col-span-2">{{ $staff->employee_id }}</span>
+                    <span class="col-span-2">: {{ $staff->employee_id }}</span>
 
                     <span class="col-span-1 font-semibold">{{ __('Department:') }}</span>
-                    <span class="col-span-2">{{ $staff->department?->name }}</span>
+                    <span class="col-span-2">: {{ $staff->department?->name }}</span>
                     
                     <span class="col-span-1 font-semibold">{{ __('Designation:') }}</span>
-                    <span class="col-span-2">{{ $staff->designation }}</span>
+                    <span class="col-span-2">: {{ $staff->designation }}</span>
                     
                     <span class="col-span-1 font-semibold">{{ __('Hire Date:') }}</span>
-                    <span class="col-span-2">{{ $staff->hire_date }}</span>
+                    <span class="col-span-2">: {{ $staff->hire_date }}</span>
 
                     <div class="col-span-3 mt-6 flex gap-3">
                         <a href="javascript:history.back()"

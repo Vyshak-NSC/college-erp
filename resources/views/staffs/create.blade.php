@@ -74,25 +74,25 @@
                                 </option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('department')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('department_id')" class="mt-2" />
                     </div>
                     
                     <!-- Program -->
                     <div class="mb-4">
                         <x-input-label for="program_id" :value="__('Program')" />
-                        <select  id="programs" class="block w-full mt-1  shadow-sm rounded-md
+                        <select  id="programs" name="program_id" class="block w-full mt-1  shadow-sm rounded-md
                                                                    border-gray-300 dark:border-gray-700 
                                                                    dark:bg-gray-900 dark:text-gray-300 
                                                                    focus:border-indigo-500 dark:focus:border-indigo-600 
                                                                    focus:ring-indigo-500 dark:focus:ring-indigo-600">
                             <option value="">--Select a Program--</option> 
                         </select>
-                        <x-input-error :messages="$errors->get('department')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('program_id')" class="mt-2" />
                     </div>
                     <!-- Course -->
                     <div class="mb-4 col-span-1">
                         <x-input-label for="course_id" :value="__('Course')" />
-                        <select name="course_id" id="courses" class="block w-full mt-1  shadow-sm rounded-md
+                        <select id="courses" class="block w-full mt-1  shadow-sm rounded-md
                                                             border-gray-300 dark:border-gray-700 
                                                             dark:bg-gray-900 dark:text-gray-300 
                                                             focus:border-indigo-500 dark:focus:border-indigo-600 

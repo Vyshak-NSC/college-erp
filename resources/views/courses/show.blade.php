@@ -12,23 +12,23 @@
                 <h3 class="text-2xl font-bold mb-4">{{ $course->name }}</h3>
                 <div class="grid grid-cols-3 gap-y-3 gap-x-2">
                     <span class="col-span-1 font-semibold">{{ __('Code:') }}</span>
-                    <span class="col-span-2">{{ $course->code }}</span>
+                    <span class="col-span-2">: {{ $course->code }}</span>
 
                     <span class="col-span-1 font-semibold">{{ __('Program:') }}</span>
-                    <span class="col-span-2">{{ $course->program->name }}</span>
+                    <span class="col-span-2">: {{ $course->program->name }}</span>
 
                     <span class="col-span-1 font-semibold">{{ __('Department:') }}</span>
-                    <span class="col-span-2">{{ $course->department->name }}</span>
+                    <span class="col-span-2">: {{ $course->department->name }}</span>
 
                     <span class="col-span-1 font-semibold">{{ __('Semester:') }}</span>
-                    <span class="col-span-2">{{ $course->semester }}</span>
+                    <span class="col-span-2">: {{ $course->semester }}</span>
 
                     <span class="col-span-1 font-semibold">{{ __('Credits:') }}</span>
-                    <span class="col-span-2">{{ $course->credits }}</span>
+                    <span class="col-span-2">: {{ $course->credits }}</span>
 
                     @if($course->description)
                         <span class="col-span-1 font-semibold">{{ __('Description:') }}</span>
-                        <span class="col-span-2">{{ $course->description }}</span>
+                        <span class="col-span-2">: {{ $course->description }}</span>
                     @endif
 
                     <div class="col-span-3 mt-6 flex gap-3">

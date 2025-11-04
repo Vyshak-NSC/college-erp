@@ -40,7 +40,7 @@
                                                                    focus:ring-indigo-500 dark:focus:ring-indigo-600">
                             <option value="">-- Select Department --</option>
                             @foreach ($departments as $department)
-                                <option value="{{ $department->id }}" @selected(old('department_id',$program->id)===$department->id)>
+                                <option value="{{ $department->id }}" @selected(old('department_id',$program->department_id)===$department->id)>
                                     {{ $department->name }}
                                 </option>
                             @endforeach

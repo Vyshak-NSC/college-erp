@@ -8,6 +8,8 @@ use App\Models\User;
 use Hash;
 use Illuminate\Http\Request;
 use Throwable;
+use Illuminate\Support\Facades\DB;
+
 
 class StaffController extends Controller
 {
@@ -36,19 +38,19 @@ class StaffController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create-staff');
-        try{
-            $validated = $request->validate([
-                // User
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:8|confirmed',
+        $validated = $request->validate([
+            // User
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
 
-                'department_id'=>'required|exists:departments,id',
-                'employee_id'=>'required|string|unique:staff,employee_id',
-                'designation'=>'nullable|string',
-                'hire_date' => 'nullable|date'
-            ]);
-
+            'department_id'=>'required|exists:departments,id',
+            'program_id'=> 'nullable|exists:programs,id',
+            'employee_id'=>'required|string|unique:staff,employee_id',
+            'designation'=>'nullable|string',
+            'hire_date' => 'nullable|date'
+        ]);
+        DB::transaction(function () use($validated){
             $user = User::create([
                 'name'=> $validated['name'],
                 'email'=>$validated['email'],
@@ -58,17 +60,15 @@ class StaffController extends Controller
 
             $user->staff()->create([
                 'department_id'=>$validated['department_id'],
+                'program_id'=>$validated['program_id'],
                 'employee_id'=>$validated['employee_id'],
                 'designation'=>$validated['designation'],
                 'hire_date'=>$validated['hire_date']
             ]);
             
-        }catch(Throwable $e){
-            return redirect()->back()
-                ->withInput()
-                ->with('error','Failed to add staff.');
-        }
-
+        
+        });
+        
         $origin = $request->input('_origin') ?? '';
             
         if($origin==='department'){
@@ -77,6 +77,7 @@ class StaffController extends Controller
         }
         return redirect()->route('staffs.index')
             ->with('success', 'Staff added successfully');
+        
     }
 
     /**
@@ -102,13 +103,16 @@ class StaffController extends Controller
      */
     public function update(Request $request, Staff $staff)
     {
+        // dd($request->all());
         $this->authorize('update-staff',$staff);
         $validated = $request->validate([
             'name'=>'nullable|string|max:30',
+            'email'=>'nullable|string|max:30',
             'designation'=>'nullable|string|max:30',
             'employee_id' => 'nullable|string|max:10',
             'hire_date'=> 'nullable|date',
-            'department_id'=>'nullable|integer|exists:departments,id'
+            'department_id'=>'nullable|integer|exists:departments,id',
+            'program_id'=>'nullable|integer|exists:programs,id'
         ]);
         $staff->user->update([
             'name'=>$validated['name']
@@ -116,6 +120,7 @@ class StaffController extends Controller
         $staff->update([
             'designation'=> $validated['designation'],
             'department_id'=> $validated['department_id'],
+            'program_id'=> $validated['program_id'],
             'employee_id'=> $validated['employee_id'],
             'hire_date' => $validated['hire_date']
         ]);

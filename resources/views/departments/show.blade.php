@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-            {{ __('Department') }}: {{ $department->name }}
+            {{ __('Department Details') }}
         </h2>
     </x-slot>
 
@@ -49,21 +49,24 @@
                     
                     <!-- ========== Details ========== -->
                     <div x-show="selectedTab === 'details'">
-                        <h3 class="text-lg font-semibold mb-4">Department Details</h3>
+                        <h3 class="text-lg font-semibold mb-4">{{ $department->name }}</h3>
                         <div class="grid grid-cols-4 gap-y-3 gap-x-2">
-                            <span class="col-span-1 font-semibold">{{ __('Code:') }}</span>
-                            <span class="col-span-3">{{ $department->code }}</span>
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Code') }}</span>
+                            <span class="col-span-3">: {{ $department->code }}</span>
+
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Staff') }}</span>
+                            <span class="col-span-3">: {{ $department->staff->count() > 0 ?: 'N/A' }}</span>
+
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Programs') }}</span>
+                            <span class="col-span-3">: {{ $department->programs->count() > 0 ?: 'N/A' }}</span>
+
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Courses') }}</span>
+                            <span class="col-span-3">: {{ $department->courses->count() > 0 ?: 'N/A' }}</span>
                             
                             @if($department->description)
-                                <span class="col-span-1 font-semibold">{{ __('Description:') }}</span>
-                                <span class="col-span-2">{{ $department->description }}</span>
+                                <span class="col-span-1 font-semibold ml-5">{{ __('Description:') }}</span>
+                                <span class="col-span-2">: {{ $department->description }}</span>
                             @endif
-                        </div>
-                        <div class="mt-6 flex justify-end gap-3">
-                             <a href="{{ route('departments.edit', $department) }}"
-                               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
-                                 <span>{{ __('Edit Department') }}</span>
-                             </a>
                         </div>
                     </div>
 
@@ -175,11 +178,15 @@
                     </div>
                 </div>
             </div>
-
-            <div class="mt-6">
+            <div class="col-span-3 mt-6 flex gap-3">
                 <a href="javascript:history.back()"
-                   class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
-                    {{ __('Back') }}
+                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
+                    <span>{{ __('Back') }}</span>
+                </a>
+
+                <a href="{{ route('departments.edit', $department) }}"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+                    <span>{{ __('Edit') }}</span>
                 </a>
             </div>
 
