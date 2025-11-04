@@ -16,7 +16,8 @@
                     <div class="mb-4 col-span-1">
                         <x-input-label for="name" :value="__('Name')" />
                         <x-text-input id="name" name="name" type="text"
-                                      class="mt-1 block w-full" required autofocus />
+                                      class="mt-1 block w-full" 
+                                      value="{{ old('name') }}" required autofocus />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
@@ -24,7 +25,8 @@
                     <div class="mb-4 col-span-1">
                         <x-input-label for="email" :value="__('Email')" />
                         <x-text-input id="email" name="email" type="text"
-                                      class="mt-1 block w-full" required autofocus />
+                                      class="mt-1 block w-full" 
+                                      value="{{ old('email') }}" required autofocus />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
                 
@@ -32,7 +34,8 @@
                     <div class="mb-4 col-span-1">
                         <x-input-label for="employee_id" :value="__('Employee ID')" />
                         <x-text-input id="employee_id" name="employee_id" type="text"
-                                      class="mt-1 block w-full" required autofocus />
+                                      class="mt-1 block w-full" 
+                                      value="{{ old('employee_id') }}" required autofocus />
                         <x-input-error :messages="$errors->get('employee_id')" class="mt-2" />
                     </div>
 
@@ -55,7 +58,8 @@
                     <div class="mb-4 col-span-1">
                         <x-input-label for="designation" :value="__('Designation')" />
                         <x-text-input id="designation" name="designation" type="text"
-                                      class="mt-1 block w-full" required autofocus />
+                                      class="mt-1 block w-full" 
+                                      value="{{ old('designation') }}" required autofocus />
                         <x-input-error :messages="$errors->get('designation')" class="mt-2" />
                     </div>
                     
@@ -67,10 +71,11 @@
                                                                    dark:bg-gray-900 dark:text-gray-300 
                                                                    focus:border-indigo-500 dark:focus:border-indigo-600 
                                                                    focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">--Select a Department--</option>
+                            <option value="">-- Select Department --</option>
                             @foreach ($departments as $department)
-                                <option value="{{ $department->id }}">
+                                <option value="{{ $department->id }}" @selected(old('department_id')===$department->id)>
                                     {{ $department->name }}
+                                    
                                 </option>
                             @endforeach
                         </select>
@@ -85,10 +90,11 @@
                                                                    dark:bg-gray-900 dark:text-gray-300 
                                                                    focus:border-indigo-500 dark:focus:border-indigo-600 
                                                                    focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">--Select a Program--</option> 
+                            <option value="">-- Select Program--</option> 
                         </select>
                         <x-input-error :messages="$errors->get('program_id')" class="mt-2" />
                     </div>
+
                     <!-- Course -->
                     <div class="mb-4 col-span-1">
                         <x-input-label for="course_id" :value="__('Course')" />
@@ -98,9 +104,6 @@
                                                             focus:border-indigo-500 dark:focus:border-indigo-600 
                                                             focus:ring-indigo-500 dark:focus:ring-indigo-600">
                             <option value="">-- Select Course --</option>
-                            @foreach ($departments as $dept)
-                                <option value="{{ $dept?->id }}">{{ $dept?->name }}</option>
-                            @endforeach
                         </select> 
                     </div>
 
@@ -129,6 +132,9 @@
     const PROGRAMS = @json($departments->pluck('programs')->flatten());
 
     $(document).ready(function () {
+        let oldProgram = "{{ old('program_id') }}";
+        let oldDept = "{{ old('department_id') }}";
+        
         // Set program list
         $('#department').change(function(){
             var dept_id = parseInt($(this).val());
@@ -138,19 +144,23 @@
             program_select.empty().append('<option value="">-- Select Program --</option> ')
             $.each(program_list,(index,program) =>{
                 program_select.append(`
-                    <option value='${program.id}'>${program.name}</option> 
+                    <option value='${program.id}' ${oldProgram === program.id ? 'selected' : ''} >${program.name}</option> 
                 `)
             })
         })
 
         // Set semester limit
         $('#programs').change(function(){
-            let courses = $(this).find(':selected');
+            let program = $(this).find(':selected');
+            console.log(program.val());
             let course_options = $('#courses')
             course_options.empty().append(`
                 <option value="">-- Select Semester --</option>
             `);
-            
         })
+        
+        if(oldDept){
+            $('#department').val(oldDept).trigger('change');
+        }
     })
 </script>

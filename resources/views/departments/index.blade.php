@@ -8,7 +8,12 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (session('success'))
-                <div class="mb-4 p-3 rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                <!-- <div class="mb-4 p-3 rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"> -->
+                <div
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-init="setTimeout(() => show = false, 3000)"
+                    class="mb-4 p-3 bg-green-600/80 rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                     {{ session('success') }}
                 </div>
             @endif
@@ -42,17 +47,17 @@
                                     <td class="p-3">{{ $dept->name }}</td>
                                     <td class="p-3">{{ $dept->code }}</td>
                                     <td class="p-3 flex gap-3 justify-center">
-                                        <a href="{{ route('departments.show', $dept) }}" class="text-yellow-400 hover:underline">View</a>
+                                        <a href="{{ route('departments.show', $dept) }}" class="text-yellow-400 hover:text-yellow-200">View</a>
                                         
                                         @can('edit-department',$dept)
-                                            <a href="{{ route('departments.edit', $dept) }}" class="text-blue-400 hover:underline">Edit</a>
+                                            <a href="{{ route('departments.edit', $dept) }}" class="text-blue-400 hover:text-blue-200">Edit</a>
                                         @endcan
                                         @can('delete-department',$dept)
                                             <form action="{{ route('departments.destroy', $dept) }}" method="POST"
                                                 onsubmit="return confirm('Delete this department?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="text-red-500 hover:underline">Delete</button>
+                                                <button class="text-red-500 hover:text-red-200">Delete</button>
                                             </form>
                                         @endcan
                                     </td>
