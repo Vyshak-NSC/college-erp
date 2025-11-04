@@ -22,16 +22,10 @@
                         {{ __('Departments') }}
                     </x-nav-link>
                 </div>
-                
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('courses.index')" :active="request()->routeIs('courses.*')">
-                        {{ __('Courses') }}
-                    </x-nav-link>
-                </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('staffs.index')" :active="request()->routeIs('staffs.*')">
-                        {{ __('Staffs') }}
+                        {{ __('Staff') }}
                     </x-nav-link>
                 </div>
             </div>

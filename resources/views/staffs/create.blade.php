@@ -125,24 +125,32 @@
     </div>
 </x-app-layout>
 
-
 <script>
     const PROGRAMS = @json($departments->pluck('programs')->flatten());
-    
+
     $(document).ready(function () {
         // Set program list
         $('#department').change(function(){
-            console.log(PROGRAMS)
             var dept_id = parseInt($(this).val());
             var program_select = $('#programs');
             var program_list = PROGRAMS.filter(program => program.department_id === dept_id);
-            
-            program_select.empty().append('<option value="">-- Select a Program --</option> ')
+
+            program_select.empty().append('<option value="">-- Select Program --</option> ')
             $.each(program_list,(index,program) =>{
                 program_select.append(`
-                    <option value='${program.id}' data-total-semesters=${program.total_semesters} >${program.name}</option> 
+                    <option value='${program.id}'>${program.name}</option> 
                 `)
             })
-        })       
+        })
+
+        // Set semester limit
+        $('#programs').change(function(){
+            let courses = $(this).find(':selected');
+            let course_options = $('#courses')
+            course_options.empty().append(`
+                <option value="">-- Select Semester --</option>
+            `);
+            
+        })
     })
 </script>

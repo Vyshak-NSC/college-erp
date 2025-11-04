@@ -33,6 +33,7 @@
                                 <th class="p-3">Name</th>
                                 <th class="p-3">Employee ID</th>
                                 <th class="p-3">Department</th>
+                                <th class="p-3">Program</th>
                                 <th class="p-3">Designation</th>
                                 <th class="p-3">Action</th>
                             </tr>
@@ -44,6 +45,7 @@
                                     <td class="p-3">{{ $staff->user->name }}</td>
                                     <td class="p-3">{{ $staff->employee_id }}</td>
                                     <td class="p-3">{{ $staff->department?->name ?? 'N/A'}}</td>
+                                    <td class="p-3">{{ $staff->program?->name ?? 'N/A'}}</td>
                                     <td class="p-3">{{ $staff->designation}}</td>
                                     <td class="p-3 flex gap-3 justify-center">
                                         <a href="{{ route('staffs.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>

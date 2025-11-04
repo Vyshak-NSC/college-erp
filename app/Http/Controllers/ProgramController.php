@@ -34,7 +34,7 @@ class ProgramController extends Controller
         $this->authorize('create-program');
 
         $validated = $request->validate([
-            'name'=>'required|string|max:30|unique:programs,name',
+            'name'=>'required|string|unique:programs,name',
             'code'=>'required|string|unique:programs,code',
             'total_semesters'=>'required|integer|min:1|max:8',
             'department_id'=>'required|integer|exists:departments,id'
@@ -71,7 +71,19 @@ class ProgramController extends Controller
      */
     public function update(Request $request, Program $program)
     {
-        //
+         $validated = $request->validate([
+            'name'=>'nullable|string|unique:programs,name,'  .$program->id,
+            'code'=>'nullable|string|unique:programs,code,' .$program->id,
+            'total_semesters'=>'nullable|integer|min:1|max:8',
+            'department_id'=>'nullable|integer|exists:departments,id'
+        ]);
+
+        $program->update($validated);
+
+        return redirect()->route('departments.show',[
+            'department'=>$program->department_id,
+            'tab'=>'programs'
+        ])->with('success','Program updated successfully');
     }
 
     /**
@@ -79,6 +91,12 @@ class ProgramController extends Controller
      */
     public function destroy(Program $program)
     {
-        //
+        $this->authorize('delete-program',$program);
+        $program->delete();
+
+        return redirect()->route('departments.show',[
+            'department'=> $program->department_id,
+            'tab' => 'programs'
+        ]);
     }
 }
