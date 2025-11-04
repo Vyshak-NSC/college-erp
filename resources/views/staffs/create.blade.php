@@ -90,7 +90,7 @@
                                                                    dark:bg-gray-900 dark:text-gray-300 
                                                                    focus:border-indigo-500 dark:focus:border-indigo-600 
                                                                    focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">-- Select Program--</option> 
+                            <option value="">-- Select Program --</option> 
                         </select>
                         <x-input-error :messages="$errors->get('program_id')" class="mt-2" />
                     </div>
@@ -129,34 +129,48 @@
 </x-app-layout>
 
 <script>
-    const PROGRAMS = @json($departments->pluck('programs')->flatten());
-
+    const DEPTS = @json($departments);
     $(document).ready(function () {
         let oldProgram = "{{ old('program_id') }}";
         let oldDept = "{{ old('department_id') }}";
         
+        
         // Set program list
         $('#department').change(function(){
-            var dept_id = parseInt($(this).val());
-            var program_select = $('#programs');
-            var program_list = PROGRAMS.filter(program => program.department_id === dept_id);
+            let dept_id = parseInt($(this).val());
+            let program_select = $('#programs');
+            const program_list = DEPTS.find(dept => dept.id == dept_id).programs;
 
             program_select.empty().append('<option value="">-- Select Program --</option> ')
             $.each(program_list,(index,program) =>{
                 program_select.append(`
-                    <option value='${program.id}' ${oldProgram === program.id ? 'selected' : ''} >${program.name}</option> 
+                    <option data-dept_id=${dept_id} value='${program.id}' ${oldProgram === program.id ? 'selected' : ''} >${program.name}</option> 
                 `)
             })
         })
 
         // Set semester limit
         $('#programs').change(function(){
-            let program = $(this).find(':selected');
-            console.log(program.val());
-            let course_options = $('#courses')
-            course_options.empty().append(`
-                <option value="">-- Select Semester --</option>
-            `);
+            let program_select = $(this).find(':selected');
+            let program_id = program_select.val();
+            let dept_id = program_select.data('dept_id');
+
+            let course_select = $('#courses');
+            let programs = null;
+            DEPTS.find(dept => dept.id == dept_id).programs.forEach(pgm => {
+                if(pgm.id = program_id) program = pgm
+            });;
+            
+            let course_list = program ? program.courses : ''
+
+            course_select.empty().append(`<option value="">-- Select Course --</option>`);
+
+            course_list.forEach(course => {
+                course_select.append(`
+                    <option value="${course.id}">${course.name}</option>
+                `);
+            });
+            
         })
         
         if(oldDept){

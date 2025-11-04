@@ -28,7 +28,7 @@ class StaffController extends Controller
      */
     public function create()
     {
-        $departments = Department::with('programs')->get(['name','id']);
+        $departments = Department::with('programs.courses')->get(['name','id']);
         return view('staffs.create', compact('departments'));
     }
 
@@ -94,7 +94,7 @@ class StaffController extends Controller
     public function edit(Staff $staff)
     {
         $this->authorize('edit-staff', $staff);
-        $departments = Department::get(['name','id']);
+        $departments = Department::with('programs.courses')->get(['name','id']);
         return view('staffs.edit',compact('staff','departments'));
     }
 

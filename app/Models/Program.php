@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Staff;
 use App\Models\Course;
 use App\Models\Department;
 
@@ -16,7 +17,7 @@ class Program extends Model
     }
 
     public function courses(){
-        return $this->hasMany(Program::class);
+        return $this->hasMany(Course::class);
     }
 
     public function staff(){
