@@ -56,31 +56,6 @@
                         </select> 
                         <x-input-error :messages="$errors->get('credits')" class="mt-2" />
                     </div>
-                    
-                    <!-- Program -->
-                    <div class="mb-4">
-                        <x-input-label for="program_id" :value="__('Program')" />
-                        <select  id="programs" name="program_id" class="block w-full mt-1  shadow-sm rounded-md
-                                                                   border-gray-300 dark:border-gray-700 
-                                                                   dark:bg-gray-900 dark:text-gray-300 
-                                                                   focus:border-indigo-500 dark:focus:border-indigo-600 
-                                                                   focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">-- Select a Program --</option> 
-                        </select>
-                        <x-input-error :messages="$errors->get('department')" class="mt-2" />
-                    </div>
-
-                    <!-- Course -->
-                    <div class="mb-4 col-span-1">
-                        <x-input-label for="course_id" :value="__('Course')" />
-                        <select name="course_id" id="courses" class="block w-full mt-1  shadow-sm rounded-md
-                                                            border-gray-300 dark:border-gray-700 
-                                                            dark:bg-gray-900 dark:text-gray-300 
-                                                            focus:border-indigo-500 dark:focus:border-indigo-600 
-                                                            focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">-- Select Course --</option>
-                        </select> 
-                    </div>
 
                     <!-- Designation -->
                     <div class="mb-4 col-span-1">
@@ -111,51 +86,3 @@
         </div>
     </div>
 </x-app-layout>
-
-<script>
-    const DEPTS = @json($departments);
-    $(document).ready(function () {
-        let CURR_PROGRAM = "{{ $staff->program_id }}";
-        let CURR_DEPT = "{{ $staff->department_id }}";
-        
-        
-        // Set program list
-        $('#department').change(function(){
-            let dept_id = parseInt($(this).val());
-            let program_select = $('#programs');
-            let program_list = DEPTS.find(dept => dept.id == dept_id).programs;
-
-            program_select.empty().append('<option value="">-- Select Program --</option> ');
-            $('#courses').empty().append('<option value="">-- Select Course --</option> ');
-
-            $.each(program_list,(index,program) =>{
-                program_select.append(`
-                    <option data-dept_id=${dept_id} value='${program.id}' ${CURR_PROGRAM === program.id ? 'selected' : ''} >${program.name}</option> 
-                `)
-            })
-        })
-
-        // Set course list
-        $('#programs').change(function(){
-            let program_id = $(this).val();
-            let dept_id = $(this).find(':selected').data('dept_id');
-            
-            let dept = DEPTS.find(dept => dept.id==dept_id);
-            let program = dept?.programs.find(pgm => pgm.id == program_id);
-            let course_list = program ? program.courses : ''
-            
-            let course_select = $('#courses');
-            course_select.empty().append(`<option value="">-- Select Course --</option>`);
-
-            $.each(course_list,(index,course) =>{
-                course_select.append(`
-                    <option data-dept_id=${dept_id} value='${course.id}' ${oldProgram === course.id ? 'selected' : ''} >${course.name}</option> 
-                `)
-            })
-        })
-
-        $('#department').val(CURR_DEPT).trigger('change');
-        $('#programs').val(CURR_PROGRAM).trigger('change');
-
-    })
-</script>

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
-use App\Models\Staff;
 use App\Models\User;
+use App\Models\Staff;
+use App\Models\Course;
+use App\Models\Department;
 use Hash;
 use Illuminate\Http\Request;
 use Throwable;
@@ -45,7 +46,6 @@ class StaffController extends Controller
             'password' => 'required|min:8|confirmed',
 
             'department_id'=>'required|exists:departments,id',
-            'program_id'=> 'nullable|exists:programs,id',
             'employee_id'=>'required|string|unique:staff,employee_id',
             'designation'=>'nullable|string',
             'hire_date' => 'nullable|date'
@@ -60,10 +60,9 @@ class StaffController extends Controller
 
             $user->staff()->create([
                 'department_id'=>$validated['department_id'],
-                'program_id'=>$validated['program_id'],
                 'employee_id'=>$validated['employee_id'],
-                'designation'=>$validated['designation'],
-                'hire_date'=>$validated['hire_date']
+                'designation'=>$validated['designation']??null,
+                'hire_date'=>$validated['hire_date']??null
             ]);
             
         
@@ -111,21 +110,62 @@ class StaffController extends Controller
             'designation'=>'nullable|string|max:30',
             'employee_id' => 'nullable|string|max:10',
             'hire_date'=> 'nullable|date',
-            'department_id'=>'nullable|integer|exists:departments,id',
-            'program_id'=>'nullable|integer|exists:programs,id'
+            'department_id'=>'nullable|integer|exists:departments,id'
         ]);
         $staff->user->update([
             'name'=>$validated['name']
         ]);
         $staff->update([
             'designation'=> $validated['designation'],
-            'department_id'=> $validated['department_id'],
-            'program_id'=> $validated['program_id'],
+            'department_id'=> $validated['department_id'] ?? null,
             'employee_id'=> $validated['employee_id'],
-            'hire_date' => $validated['hire_date']
+            'hire_date' => $validated['hire_date'] ?? null
         ]);
         return redirect()->route('staffs.index')
                          ->with('success','Staff updated successfully');
+    }
+
+    /**
+     * Show orm for assigning course to staff
+     */
+    public function assignCourse(Staff $staff){
+        $staffs = Staff::select('staff.id','users.name')
+            ->join('users','users.id','=','staff.user_id')
+            ->get();
+
+        $departments = Department::with('programs.courses')->get(['name','id']);
+        return view('staffs.assign-course', compact('staff','departments'));
+    }
+
+    /**
+     * Add teh assigned course and staff to table
+     */
+    public function setCourse(Staff $staff, Request $request){
+        // dd($request->all());
+        $validated = $request->validate([
+            'id'=>'required|integer|exists:staff,id',
+            'course_id' => 'required|exists:courses,id'
+        ]);
+
+        $staff = Staff::find($request->id);
+        $staff->courses()->syncWithoutDetaching([$request->course_id]);
+        return redirect()->route('staffs.show',['staff'=>$staff, 'tab'=>'courses'])->with('success','Course assigned successfully');
+    }
+
+    /**
+     * Edit assigned course
+     */
+    public function editCourse(Staff $staff){
+        return view('staffs.edit-course');
+    }
+
+    /**
+     * Delete assigned course
+     */
+    public function destroyCourse(Staff $staff, Course $course){
+        $staff->courses()->detach($course->id);
+        return redirect()->route('staffs.show',['staff'=>$staff, 'tab'=>'courses'])
+                         ->with('success','Staff deleted successfully');
     }
 
     /**
@@ -136,7 +176,7 @@ class StaffController extends Controller
         $this->authorize('delete-staff',$staff);
         $staff->delete();
 
-        return redirect()->route('staffs.index')
+        return redirect()->route('departments.show',['department'=>$staff->department_id,'tab'=>'staff'])
                          ->with('success','Staff deleted successfully');
     }
 }

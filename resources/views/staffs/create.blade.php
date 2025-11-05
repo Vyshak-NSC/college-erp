@@ -81,31 +81,6 @@
                         </select>
                         <x-input-error :messages="$errors->get('department_id')" class="mt-2" />
                     </div>
-                    
-                    <!-- Program -->
-                    <div class="mb-4">
-                        <x-input-label for="program_id" :value="__('Program')" />
-                        <select  id="programs" name="program_id" class="block w-full mt-1  shadow-sm rounded-md
-                                                                   border-gray-300 dark:border-gray-700 
-                                                                   dark:bg-gray-900 dark:text-gray-300 
-                                                                   focus:border-indigo-500 dark:focus:border-indigo-600 
-                                                                   focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">-- Select Program --</option> 
-                        </select>
-                        <x-input-error :messages="$errors->get('program_id')" class="mt-2" />
-                    </div>
-
-                    <!-- Course -->
-                    <div class="mb-4 col-span-1">
-                        <x-input-label for="course_id" :value="__('Course')" />
-                        <select id="courses" class="block w-full mt-1  shadow-sm rounded-md
-                                                            border-gray-300 dark:border-gray-700 
-                                                            dark:bg-gray-900 dark:text-gray-300 
-                                                            focus:border-indigo-500 dark:focus:border-indigo-600 
-                                                            focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">-- Select Course --</option>
-                        </select> 
-                    </div>
 
                     <!-- Hire Date -->
                     <div class="mb-4 col-span-1">
@@ -127,54 +102,3 @@
         </div>
     </div>
 </x-app-layout>
-
-<script>
-    const DEPTS = @json($departments);
-    $(document).ready(function () {
-        let oldProgram = "{{ old('program_id') }}";
-        let oldDept = "{{ old('department_id') }}";
-        
-        
-        // Set program list
-        $('#department').change(function(){
-            let dept_id = parseInt($(this).val());
-            let program_select = $('#programs');
-            const program_list = DEPTS.find(dept => dept.id == dept_id).programs;
-
-            program_select.empty().append('<option value="">-- Select Program --</option> ')
-            $.each(program_list,(index,program) =>{
-                program_select.append(`
-                    <option data-dept_id=${dept_id} value='${program.id}' ${oldProgram === program.id ? 'selected' : ''} >${program.name}</option> 
-                `)
-            })
-        })
-
-        // Set semester limit
-        $('#programs').change(function(){
-            let program_select = $(this).find(':selected');
-            let program_id = program_select.val();
-            let dept_id = program_select.data('dept_id');
-
-            let course_select = $('#courses');
-            let programs = null;
-            DEPTS.find(dept => dept.id == dept_id).programs.forEach(pgm => {
-                if(pgm.id = program_id) program = pgm
-            });;
-            
-            let course_list = program ? program.courses : ''
-
-            course_select.empty().append(`<option value="">-- Select Course --</option>`);
-
-            course_list.forEach(course => {
-                course_select.append(`
-                    <option value="${course.id}">${course.name}</option>
-                `);
-            });
-            
-        })
-        
-        if(oldDept){
-            $('#department').val(oldDept).trigger('change');
-        }
-    })
-</script>

@@ -19,6 +19,7 @@ class DepartmentSeeder extends Seeder
             ['name' => 'Mechanical Engineering', 'code' => 'ME', 'description' => 'Mechanical and Industrial Systems'],
             ['name' => 'Electrical Engineering', 'code' => 'EE', 'description' => 'Electrical and Electronics'],
             ['name' => 'Civil Engineering', 'code' => 'CE', 'description' => 'Civil and Environmental Studies'],
+            ['name' => 'Electronics and Communications Engineering', 'code' => 'ECE', 'description' => 'Electronics and Communication Studies'],
         ];
 
         foreach($departments as $department){
