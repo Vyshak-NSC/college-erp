@@ -94,7 +94,7 @@
                         <!-- Assign Course -->
                         <div x-show="tab==='assign'">
                             <div class="w-full bg-white dark:bg-gray-800 shadow ">
-                                <form method="POST" action="{{ route('staffs.set-course',$staff) }}" class="grid grid-cols-3 gap-4">
+                                <form method="POST" action="{{ route('staffs.set-course') }}" class="grid grid-cols-3 gap-4">
                                     @csrf
                                     <!-- Name -->
                                     <div class="mb-4 col-span-1">
@@ -240,7 +240,7 @@
             let course_select = $('#courses');
             let programs = null;
             DEPTS.find(dept => dept.id == dept_id).programs.forEach(pgm => {
-                if(pgm.id = program_id) program = pgm
+                if(pgm.id == program_id) program = pgm
             });;
             
             let course_list = program ? program.courses : ''
