@@ -14,7 +14,7 @@
                     <div class="mb-4 col-span-1">
                         <x-input-label for="name" :value="__('Name')" />
                         <x-text-input id="name" value="{{ old('name',$staff->user->name) }}" readonly/>
-                        <input type="hidden" name="id" value="{{ $staff->id }}">
+                        <input type="hidden" name="staff_id" value="{{ $staff->id }}">
                     </div>
                     
                     <!-- Employee Id -->

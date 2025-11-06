@@ -22,15 +22,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-Route::middleware(['auth'])->group(function() {
     Route::resource('departments', DepartmentController::class);
     Route::resource('courses', CourseController::class);
+    
     Route::get('staffs/{staff}/assign-course', [StaffController::class,'assignCourse'])->name('staffs.assign-course');
     Route::post('staffs/set-course', [StaffController::class,'setCourse'])->name('staffs.set-course');
-    Route::get('staffs/{staff}/edit-course', [StaffController::class,'editCourse'])->name('staffs.edit-course');
+    Route::get('staffs/{staff}/edit-course/{course}', [StaffController::class,'editCourse'])->name('staffs.edit-course');
+    Route::put('staffs/update-course/{staff}/{course}', [StaffController::class,'updateCourse'])->name('staffs.update-course');
     Route::delete('staffs/{staff}/destroy-course/{course}', [StaffController::class,'destroyCourse'])->name('staffs.destroy-course');
+    
     Route::resource('staffs', StaffController::class);
     Route::resource('programs', ProgramController::class);
 });

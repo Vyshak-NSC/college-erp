@@ -122,7 +122,7 @@ class StaffController extends Controller
             'hire_date' => $validated['hire_date'] ?? null
         ]);
 
-        if(request('origin'==='department')){
+        if(request('origin')==='department'){
             return redirect()->route('departments.show',[
                                     'department'=>$validated['department_id'],
                                     'tab'=>'staff'
@@ -131,6 +131,8 @@ class StaffController extends Controller
         return redirect()->route('staffs.index')
                          ->with('success','Staff updated successfully');
     }
+
+
 
     /**
      * Show orm for assigning course to staff
@@ -146,14 +148,14 @@ class StaffController extends Controller
     public function setCourse(Request $request){
         // dd($request->all());
         $validated = $request->validate([
-            'id'=>'required|integer|exists:staff,id',
+            'staff_id'=>'required|integer|exists:staff,id',
             'course_id' => 'required|exists:courses,id'
         ]);
 
-        $staff = Staff::find($request->id);
+        $staff = Staff::find($request->staff_id);
         $staff->courses()->syncWithoutDetaching([$request->course_id]);
 
-        if(request('origin'==='department')){
+        if(request('origin')==='department'){
             return redirect()->route('departments.show',[
                                     'department'=>$validated['department_id'],
                                     'tab'=>'staff'
@@ -166,9 +168,28 @@ class StaffController extends Controller
     /**
      * Edit assigned course
      */
-    public function editCourse(Staff $staff, Course $course){
+    public function editCourse(Staff $staff, Course $course, Request $request){
         $departments = Department::with('programs.courses')->get(['name','id']);
         return view('staffs.edit-course', compact('staff', 'course', 'departments'));
+    }
+    
+    /**
+     * Updaet assigned courses in storage
+     */
+    public function updateCourse(Staff $staff, Course $course, Request $request){
+        // dd($request->all());
+        $validated = $request->validate([
+            'course_id' => 'required|exists:courses,id'
+        ]);
+
+        $stf = DB::table('course_staff')
+            ->where('staff_id',$staff->id)
+            ->where('course_id',$course->id)
+            ->update([
+                'course_id' => $validated['course_id']
+            ]);
+        $departments = Department::with('programs.courses')->get(['name','id']);
+        return redirect()->route('staffs.show', ['staff'=>$staff,'tab'=>'courses']);
     }
 
     /**
@@ -187,7 +208,7 @@ class StaffController extends Controller
     {
         $this->authorize('delete-staff',$staff);
         $staff->delete();
-        if(request('origin'==='department')){
+        if(request('origin')==='department'){
             return redirect()->route('departments.show',[
                                     'department'=>$staff->department_id,
                                     'tab'=>'staff'

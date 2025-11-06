@@ -8,13 +8,13 @@
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('staffs.set-course', $staff) }}" class="grid grid-cols-3 gap-4">
+                <form method="POST" action="{{ route('staffs.update-course', ['staff'=>$staff,'course'=>$course]) }}" class="grid grid-cols-3 gap-4">
                     @csrf
+                    @method("PUT")
                     <!-- Name -->
                     <div class="mb-4 col-span-1">
                         <x-input-label for="name" :value="__('Name')" />
                         <x-text-input id="name" value="{{ old('name',$staff->user->name) }}" readonly/>
-                        <input type="hidden" name="id" value="{{ $staff->id }}">
                     </div>
                     
                     <!-- Employee Id -->
@@ -47,7 +47,7 @@
                     <!-- Program -->
                     <div class="mb-4">
                         <x-input-label for="program_id" :value="__('Program')" />
-                        <select  id="programs" name="program_id" class="block w-full mt-1  shadow-sm rounded-md
+                        <select  id="programs" class="block w-full mt-1  shadow-sm rounded-md
                                                                    border-gray-300 dark:border-gray-700 
                                                                    dark:bg-gray-900 dark:text-gray-300 
                                                                    focus:border-indigo-500 dark:focus:border-indigo-600 
@@ -113,8 +113,8 @@
 
     
         const DEPTS = @json($departments);
-        alert({{ $course }})
 
+        let oldCourse = {{ old('course_id', $course->id) }}
         let oldProgram = "{{ old('program_id',$course->program_id) }}";
         let oldDept = "{{ old('department_id', $staff->department_id) }}";
         
@@ -131,8 +131,8 @@
                     <option data-dept_id=${dept_id} value='${program.id}' ${oldProgram === program.id ? 'selected' : ''} >${program.name}</option> 
                 `)
             })
+            $('#programs').val(oldProgram).trigger('change');
         })
-        $('#programs').val(oldProgram).trigger('change');
 
         // Set course list
         $('#programs').change(function(){
@@ -143,7 +143,7 @@
             let course_select = $('#courses');
             let programs = null;
             DEPTS.find(dept => dept.id == dept_id).programs.forEach(pgm => {
-                if(pgm.id = program_id) program = pgm
+                if(pgm.id == program_id) program = pgm
             });;
             
             let course_list = program ? program.courses : ''
@@ -152,10 +152,9 @@
 
             course_list.forEach(course => {
                 course_select.append(`
-                    <option value="${course.id}">${course.name}</option>
+                    <option value="${course.id}" ${oldCourse === course.id ? 'selected':''}>${course.name}</option>
                 `);
             });
-            
         })
         
         if(oldDept){

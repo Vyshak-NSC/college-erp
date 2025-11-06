@@ -6,9 +6,9 @@
     </x-slot>
 
     <div class="py-12">
-        <div x-data="{ selectedTab: '{{ request('tab','details') }}' }">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 text-gray-900 dark:text-gray-100">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 text-gray-900 dark:text-gray-100">
+                <div x-data="{ selectedTab: '{{ request('tab','details') }}' }">
                     <div class="border-b border-gray-100 dark:border-gray-700">
                         <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
                             <button
