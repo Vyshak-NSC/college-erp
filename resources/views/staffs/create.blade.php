@@ -10,8 +10,7 @@
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('staffs.store') }}" class="grid grid-cols-3 gap-4">
                     @csrf
-                    <input type="hidden" value="{{ request('_origin') }}" name="_origin">
-
+                    
                     <!-- Name -->
                     <div class="mb-4 col-span-1">
                         <x-input-label for="name" :value="__('Name')" />

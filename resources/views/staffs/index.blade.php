@@ -35,7 +35,7 @@
                                     class="text-lg font-semibold" class="whitespace-nowrap py-4 px-1 border-b-2 text-sm">Assign course</button>
                             </nav>
                             
-                            @can('create-department')
+                            @can('create-staff')
                                 <a href="{{ route('staffs.create') }}"
                                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                     Add Staff
@@ -71,7 +71,7 @@
                                                     <a href="{{ route('staffs.edit', $staff) }}" class="text-blue-400 hover:underline">Edit</a>
                                                 @endcan
                                                 @can('delete-staff',$staff)
-                                                    <form action="{{ route('staffs.destroy', $staff) }}" method="POST"
+                                                    <form action="{{ route('staffs.destroy', $staff).'?origin=department' }}" method="POST"
                                                         onsubmit="return confirm('Delete this staff?')">
                                                         @csrf
                                                         @method('DELETE')
@@ -93,24 +93,30 @@
 
                         <!-- Assign Course -->
                         <div x-show="tab==='assign'">
-                            <div class="w-full bg-white dark:bg-gray-800 shadow sm:rounded-lg p-4">
-                                <form method="POST" action="{{ route('staffs.set-course',$staff) }}" class="grid grid-cols-3 gap-4">
+                            <div class="w-full bg-white dark:bg-gray-800 shadow ">
+                                <form method="POST" action="{{ route('staffs.set-course') }}" class="grid grid-cols-3 gap-4">
                                     @csrf
                                     <!-- Name -->
                                     <div class="mb-4 col-span-1">
                                         <x-input-label for="name" :value="__('Name')" />
-                                        <x-text-input id="name" type="text" 
-                                                    class="mt-1 block w-full"
-                                                    value="{{ old('name',$staff->user->name) }}" readonly/>
-                                        <input type="hidden" name="id" value="{{ $staff->id }}">
+                                        <select name="id" id="name" class="block w-full mt-1  shadow-sm rounded-md
+                                                            border-gray-300 dark:border-gray-700 
+                                                            dark:bg-gray-900 dark:text-gray-300 
+                                                            focus:border-indigo-500 dark:focus:border-indigo-600 
+                                                            focus:ring-indigo-500 dark:focus:ring-indigo-600">
+                                        <option value="">-- Select Staff --</option>
+                                        @foreach ($staffs as $staff)
+                                            <option value="{{ $staff->id }}">{{ $staff->user->name }}
+                                            <input type="hidden" name="id" value="{{ $staff->id }}"></option>
+                                        @endforeach
+                                    </select> 
                                     </div>
                                     
                                     <!-- Employee Id -->
                                     <div class="mb-4 col-span-1">
                                         <x-input-label for="name" :value="__('Emoployee ID')" />
                                         <x-text-input id="employee_id" type="text"
-                                                    class="mt-1 block w-full"
-                                                    value="{{ old('employee_id',$staff->employee_id) }}" readonly />
+                                                    class="mt-1 block w-full"/>
                                         <x-input-error :messages="$errors->get('employee_id')" class="mt-2" />
                                     </div>
 
@@ -126,7 +132,7 @@
                                                                             focus:ring-indigo-500 dark:focus:ring-indigo-600">
                                             <option value="">-- Select Department --</option>
                                             @foreach ($departments as $dept)
-                                                <option value="{{ $dept->id }}" @selected(old('department_id',$staff->department_id)==$dept->id)>{{ $dept->name }}</option>
+                                                <option value="{{ $dept->id }}">{{ $dept->name }}</option>
                                             @endforeach
                                         </select> 
                                         <x-input-error :messages="$errors->get('department_id')" class="mt-2" />
@@ -175,3 +181,83 @@
         </div>
     </div>
 </x-app-layout>
+
+
+<script>
+    $(document).ready(()=>{
+        $('#name').change(function(){
+            let emp_id = $(this).val();
+            $('#employee_id').val(emp_id)
+        })
+
+        $('#employee_id').on('input',function(){
+            let emp_id = $(this).val();
+            if(emp_id === '') {
+                $('#name').val('');
+                return;
+            }
+            let staff = $('#name option').filter(function(){
+                return $(this).val()===emp_id;
+            }).val();
+
+            if(staff){
+                $('#name').val(staff);
+                $('#name option.no-match').remove();
+            }else{
+                $('#name option.no-match').remove();
+                $('#name').append(`<option class="no-match" value="not-found">No Staff of ID: ${emp_id}</option>`);
+                $('#name').val('not-found');
+            }
+        })
+
+
+    
+        const DEPTS = @json($departments);
+
+        let oldProgram = "{{ old('program_id') }}";
+        let oldDept = "{{ old('department_id') }}";
+        
+        
+        // Set program list
+        $('#department').change(function(){
+            let dept_id = parseInt($(this).val());
+            let program_select = $('#programs');
+            const program_list = DEPTS.find(dept => dept.id == dept_id).programs;
+
+            program_select.empty().append('<option value="">-- Select Program --</option> ')
+            $.each(program_list,(index,program) =>{
+                program_select.append(`
+                    <option data-dept_id=${dept_id} value='${program.id}' ${oldProgram === program.id ? 'selected' : ''} >${program.name}</option> 
+                `)
+            })
+        })
+
+        // Set course list
+        $('#programs').change(function(){
+            let program_select = $(this).find(':selected');
+            let program_id = program_select.val();
+            let dept_id = program_select.data('dept_id');
+
+            let course_select = $('#courses');
+            let programs = null;
+            DEPTS.find(dept => dept.id == dept_id).programs.forEach(pgm => {
+                if(pgm.id = program_id) program = pgm
+            });;
+            
+            let course_list = program ? program.courses : ''
+
+            course_select.empty().append(`<option value="">-- Select Course --</option>`);
+
+            course_list.forEach(course => {
+                course_select.append(`
+                    <option value="${course.id}">${course.name}</option>
+                `);
+            });
+            
+        })
+        
+        if(oldDept){
+            $('#department').val(oldDept).trigger('change');
+        }
+    })
+</script>

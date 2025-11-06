@@ -20,7 +20,7 @@ class StaffController extends Controller
     public function index()
     {
         $staffs = Staff::all();
-        $departments = Department::get(['name','id']);
+        $departments = Department::with('programs.courses')->get(['name','id']);
         return view('staffs.index',compact('staffs','departments'));
     }
 
@@ -67,12 +67,12 @@ class StaffController extends Controller
             
         
         });
-        
-        $origin = $request->input('_origin') ?? '';
-            
-        if($origin==='department'){
-            return redirect()->route('departments.show',['department'=>$validated['department_id'], 
-                'tab'=>'staff'])->with('success', 'Staff added successfully');
+         
+        if(request('origin')==='department'){
+            return redirect()->route('departments.show',[
+                'department'=>$validated['department_id'], 
+                'tab'=>'staff'
+            ])->with('success', 'Staff added successfully');
         }
         return redirect()->route('staffs.index')
             ->with('success', 'Staff added successfully');
@@ -121,6 +121,13 @@ class StaffController extends Controller
             'employee_id'=> $validated['employee_id'],
             'hire_date' => $validated['hire_date'] ?? null
         ]);
+
+        if(request('origin'==='department')){
+            return redirect()->route('departments.show',[
+                                    'department'=>$validated['department_id'],
+                                    'tab'=>'staff'
+            ])->with('success','Staff updated successfully');
+        }
         return redirect()->route('staffs.index')
                          ->with('success','Staff updated successfully');
     }
@@ -129,10 +136,6 @@ class StaffController extends Controller
      * Show orm for assigning course to staff
      */
     public function assignCourse(Staff $staff){
-        $staffs = Staff::select('staff.id','users.name')
-            ->join('users','users.id','=','staff.user_id')
-            ->get();
-
         $departments = Department::with('programs.courses')->get(['name','id']);
         return view('staffs.assign-course', compact('staff','departments'));
     }
@@ -140,7 +143,7 @@ class StaffController extends Controller
     /**
      * Add teh assigned course and staff to table
      */
-    public function setCourse(Staff $staff, Request $request){
+    public function setCourse(Request $request){
         // dd($request->all());
         $validated = $request->validate([
             'id'=>'required|integer|exists:staff,id',
@@ -149,14 +152,23 @@ class StaffController extends Controller
 
         $staff = Staff::find($request->id);
         $staff->courses()->syncWithoutDetaching([$request->course_id]);
+
+        if(request('origin'==='department')){
+            return redirect()->route('departments.show',[
+                                    'department'=>$validated['department_id'],
+                                    'tab'=>'staff'
+            ])->with('success','Course assigned successfully');
+        }
+
         return redirect()->route('staffs.show',['staff'=>$staff, 'tab'=>'courses'])->with('success','Course assigned successfully');
     }
 
     /**
      * Edit assigned course
      */
-    public function editCourse(Staff $staff){
-        return view('staffs.edit-course');
+    public function editCourse(Staff $staff, Course $course){
+        $departments = Department::with('programs.courses')->get(['name','id']);
+        return view('staffs.edit-course', compact('staff', 'course', 'departments'));
     }
 
     /**
@@ -175,8 +187,13 @@ class StaffController extends Controller
     {
         $this->authorize('delete-staff',$staff);
         $staff->delete();
-
-        return redirect()->route('departments.show',['department'=>$staff->department_id,'tab'=>'staff'])
+        if(request('origin'==='department')){
+            return redirect()->route('departments.show',[
+                                    'department'=>$staff->department_id,
+                                    'tab'=>'staff'
+            ])->with('success','Course assigned successfully');
+        }
+        return redirect()->route('staffs.index')
                          ->with('success','Staff deleted successfully');
     }
 }

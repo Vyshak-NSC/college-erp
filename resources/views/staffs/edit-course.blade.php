@@ -8,21 +8,13 @@
     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('staffs.set-course') }}" class="grid grid-cols-3 gap-4">
+                <form method="POST" action="{{ route('staffs.set-course', $staff) }}" class="grid grid-cols-3 gap-4">
                     @csrf
                     <!-- Name -->
                     <div class="mb-4 col-span-1">
                         <x-input-label for="name" :value="__('Name')" />
-                        <select name="id" id="name" class="block w-full mt-1  shadow-sm rounded-md
-                                                            border-gray-300 dark:border-gray-700 
-                                                            dark:bg-gray-900 dark:text-gray-300 
-                                                            focus:border-indigo-500 dark:focus:border-indigo-600 
-                                                            focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                            <option value="">-- Select Staff --</option>
-                            @foreach ($staffs as $staff)
-                                <option value="{{ $staff->id }}" @selected(old('department_id')==$staff->id)>{{ $staff->name }}</option>
-                            @endforeach
-                        </select> 
+                        <x-text-input id="name" value="{{ old('name',$staff->user->name) }}" readonly/>
+                        <input type="hidden" name="id" value="{{ $staff->id }}">
                     </div>
                     
                     <!-- Employee Id -->
@@ -30,7 +22,7 @@
                         <x-input-label for="name" :value="__('Emoployee ID')" />
                         <x-text-input id="employee_id" type="text"
                                       class="mt-1 block w-full"
-                                      value="{{ old('employee_id') }}" required />
+                                      value="{{ old('employee_id', $staff->employee_id) }}" required readonly/>
                         <x-input-error :messages="$errors->get('employee_id')" class="mt-2" />
                     </div>
 
@@ -121,9 +113,10 @@
 
     
         const DEPTS = @json($departments);
+        alert({{ $course }})
 
-        let oldProgram = "{{ old('program_id') }}";
-        let oldDept = "{{ old('department_id') }}";
+        let oldProgram = "{{ old('program_id',$course->program_id) }}";
+        let oldDept = "{{ old('department_id', $staff->department_id) }}";
         
         
         // Set program list
@@ -139,8 +132,9 @@
                 `)
             })
         })
+        $('#programs').val(oldProgram).trigger('change');
 
-        // Set semester limit
+        // Set course list
         $('#programs').change(function(){
             let program_select = $(this).find(':selected');
             let program_id = program_select.val();

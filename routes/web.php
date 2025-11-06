@@ -28,7 +28,7 @@ Route::middleware(['auth'])->group(function() {
     Route::resource('departments', DepartmentController::class);
     Route::resource('courses', CourseController::class);
     Route::get('staffs/{staff}/assign-course', [StaffController::class,'assignCourse'])->name('staffs.assign-course');
-    Route::post('staffs/{staff}/set-course', [StaffController::class,'setCourse'])->name('staffs.set-course');
+    Route::post('staffs/set-course', [StaffController::class,'setCourse'])->name('staffs.set-course');
     Route::get('staffs/{staff}/edit-course', [StaffController::class,'editCourse'])->name('staffs.edit-course');
     Route::delete('staffs/{staff}/destroy-course/{course}', [StaffController::class,'destroyCourse'])->name('staffs.destroy-course');
     Route::resource('staffs', StaffController::class);

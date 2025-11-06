@@ -32,20 +32,22 @@
                             </button>
                         </nav>
                     </div>
+
+                    <!-- Details -->
                     <div x-show="selectedTab === 'details'">
                         <h3 class="text-2xl font-bold mb-4 mt-4">{{ $staff->user->name }}</h3>
-                        <div class="grid grid-cols-3 gap-y-3 gap-x-2">
-                            <span class="col-span-1 font-semibold">{{ __('Employee ID:') }}</span>
-                            <span class="col-span-2">: {{ $staff->employee_id }}</span>
+                        <div class="grid grid-cols-4 gap-y-3 gap-x-2">
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Employee ID:') }}</span>
+                            <span class="col-span-3">: {{ $staff->employee_id }}</span>
 
-                            <span class="col-span-1 font-semibold">{{ __('Department:') }}</span>
-                            <span class="col-span-2">: {{ $staff->department?->name }}</span>
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Department:') }}</span>
+                            <span class="col-span-3">: {{ $staff->department?->name }}</span>
                             
-                            <span class="col-span-1 font-semibold">{{ __('Designation:') }}</span>
-                            <span class="col-span-2">: {{ $staff->designation }}</span>
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Designation:') }}</span>
+                            <span class="col-span-3">: {{ $staff->designation }}</span>
                             
-                            <span class="col-span-1 font-semibold">{{ __('Hire Date:') }}</span>
-                            <span class="col-span-2">: {{ $staff->hire_date }}</span>
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Hire Date:') }}</span>
+                            <span class="col-span-3">: {{ $staff->hire_date }}</span>
 
                             <div class="col-span-3 mt-6 flex gap-3">
                                 <a href="javascript:history.back()"
@@ -61,12 +63,10 @@
                         </div>
                     </div>
 
+                    <!-- Courses -->
                     <div x-show="selectedTab === 'courses'">
                         <h3 class="text-xl font-semibold mb-4 mt-4 flex justify-between">
                             Courses Assigned
-                            <a href="{{ route('staffs.assign-course', $staff) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
-                                Assign Course
-                            </a>
                         </h3>
                         <table class="w-full text-center border-collapse">
                             <thead class="bg-gray-100 dark:bg-gray-700">
@@ -87,10 +87,10 @@
                                         <td class="py-3 px-1">{{ $course->program->name }}</td>
                                         
                                         <td class="py-3 px-1 flex gap-3 justify-center">
-                                            <a href="{{ route('staffs.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>
+                                            <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>
                                             
                                             @can('edit-staff',$staff)
-                                                <a href="{{ route('staffs.edit-course', $staff) }}" class="text-blue-400 hover:underline">Edit</a>
+                                                <a href="{{ route('staffs.edit-course', ['staff'=>$staff,'course'=>$course]) }}" class="text-blue-400 hover:underline">Edit</a>
                                             @endcan
                                             @can('delete-staff',$staff)
                                                 <form action="{{ route('staffs.destroy-course', ['staff'=>$staff, 'course'=>$course]) }}" method="POST"
@@ -112,16 +112,21 @@
                             </tbody>
                         </table>
                         <div class="col-span-3 mt-6 flex gap-3">
-                                <a href="javascript:history.back()"
-                                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
-                                    <span>{{ __('Back') }}</span>
-                                </a>
+                            <a href="javascript:history.back()"
+                            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
+                                <span>{{ __('Back') }}</span>
+                            </a>
 
-                                <a href="{{ route('staffs.edit', $staff) }}"
+                            <a x-show="selectedTab==='details'" href="{{ route('staffs.edit', $staff) }}"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+                                <span>{{ __('Edit') }}</span>
+                            </a>
+
+                            <a x-show="selectedTab==='courses'" href="{{ route('staffs.assign-course', $staff) }}"
                                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
-                                    <span>{{ __('Edit') }}</span>
-                                </a>
-                            </div>
+                                Assign Course
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
