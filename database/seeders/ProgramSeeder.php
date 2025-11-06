@@ -29,6 +29,10 @@ class ProgramSeeder extends Seeder
 
             // CE dept
             ['name'=>'B.Tech Civil Engineering',    'code'=>'BTECH_CE',  'total_semesters'=>8, 'department_code'=>'CE'],
+
+            // EE dept
+            ['name'=>'B.Tech Electrical Engineering', 'code'=>'BTECH_EE', 'total_semesters'=>8, 'department_code'=>'EE'],
+            ['name'=>'M.Tech Electrical Engineering', 'code'=>'MTECH_EE', 'total_semesters'=>4, 'department_code'=>'EE'],
         ];
 
         foreach($programs as $p) {

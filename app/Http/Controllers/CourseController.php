@@ -43,9 +43,9 @@ class CourseController extends Controller
             'program_id'=>'required|integer|exists:programs,id'
         ]);
 
-        Course::create($validated);
+        $course = Course::create($validated);
+        return redirect()->route('departments.show',['department'=> $course->program->department_id,'tab'=>'courses'])->with('success','Course created successfully');
 
-        return redirect()->route('courses.index')->with('success','Course created successfully');
     }
 
     /**
@@ -82,8 +82,7 @@ class CourseController extends Controller
         ]);
 
         $course->update($validated);
-
-        return redirect()->route('courses.index')->with('success','Course updated successfully');
+        return redirect()->route('departments.show',['department'=> $course->program->department_id,'tab'=>'courses'])->with('success','Course updated successfully');
     }
 
     /**
@@ -92,8 +91,10 @@ class CourseController extends Controller
     public function destroy(Course $course)
     {
         $this->authorize('delete-course',$course);
-
         $course->delete();
+        if(request('origin')==='department'){
+            return redirect()->route('departments.show',['department'=> $course->program->department_id,'tab'=>'courses'])->with('success','Course deleted successfully');
+        }
 
         return redirect()->route('courses.index')
                          ->with('success','"Course deleted successfully');

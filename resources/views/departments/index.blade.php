@@ -37,6 +37,8 @@
                                 <th class="p-3">#</th>
                                 <th class="p-3">Name</th>
                                 <th class="p-3">Code</th>
+                                <th class="p-3">Programs</th>
+                                <th class="p-3">Courses</th>
                                 <th class="p-3">Action</th>
                             </tr>
                         </thead>
@@ -46,6 +48,8 @@
                                     <td class="p-3">{{ $loop->iteration }}</td>
                                     <td class="p-3">{{ $dept->name }}</td>
                                     <td class="p-3">{{ $dept->code }}</td>
+                                    <td class="p-3">{{ $dept->programs->count() }}</td>
+                                    <td class="p-3">{{ $dept->courses->count() }}</td>
                                     <td class="p-3 flex gap-3 justify-center">
                                         <a href="{{ route('departments.show', $dept) }}" class="text-yellow-400 hover:text-yellow-200">View</a>
                                         

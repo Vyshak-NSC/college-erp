@@ -204,7 +204,7 @@
                         </div>
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Courses</h3>
-                            <a href="{{ route('courses.create', ['_origin'=>'department']) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
+                            <a href="{{ route('courses.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
                                 Add Course
                             </a>
                         </div>
@@ -215,6 +215,7 @@
                                     <th class="p-3">Name</th>
                                     <th class="p-3">Department</th>
                                     <th class="p-3">Program</th>
+                                    <th class="p-3">Semester</th>
                                     <th class="p-3">Credits</th>
                                     <th class="p-3">Action</th>
                                 </tr>
@@ -226,6 +227,7 @@
                                         <td class="p-3">{{ $course->name }}</td>
                                         <td class="p-3">{{ $course->department?->name ?? 'N/A'}}</td>
                                         <td class="p-3">{{ $course->program?->name ?? 'N/A'}}</td>
+                                        <td class="p-3">{{ $course->semester ?? 'N/A'}}</td>
                                         <td class="p-3">{{ $course->credits ?? 'N/A'}}</td>
                                         <td class="p-3 flex gap-3 justify-center">
                                             <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>
@@ -234,7 +236,7 @@
                                                 <a href="{{ route('courses.edit', $course) }}" class="text-blue-400 hover:underline">Edit</a>
                                             @endcan
                                             @can('delete-course',$course)
-                                                <form action="{{ route('courses.destroy', $course) }}" method="POST"
+                                                <form action="{{ route('courses.destroy', $course).'?origin=department' }}" method="POST"
                                                     onsubmit="return confirm('Delete this course?')">
                                                     @csrf
                                                     @method('DELETE')
