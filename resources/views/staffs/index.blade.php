@@ -94,7 +94,7 @@
                         <!-- Assign Course -->
                         <div x-show="tab==='assign'">
                             <div class="w-full bg-white dark:bg-gray-800 shadow ">
-                                <form method="POST" action="{{ route('staffs.set-course') }}" class="grid grid-cols-3 gap-4">
+                                <form method="POST" action="{{ route('staffs.set-course',$staff) }}" class="grid grid-cols-3 gap-4">
                                     @csrf
                                     <!-- Name -->
                                     <div class="mb-4 col-span-1">
@@ -106,8 +106,7 @@
                                                             focus:ring-indigo-500 dark:focus:ring-indigo-600">
                                         <option value="">-- Select Staff --</option>
                                         @foreach ($staffs as $staff)
-                                            <option value="{{ $staff->id }}">{{ $staff->user->name }}
-                                            <input type="hidden" name="id" value="{{ $staff->id }}"></option>
+                                            <option value="{{ $staff->id }}">{{ $staff->user->name }}</option>
                                         @endforeach
                                     </select> 
                                     </div>

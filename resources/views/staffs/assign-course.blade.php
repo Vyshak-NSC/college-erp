@@ -118,6 +118,8 @@
         
         // Set program list
         $('#department').change(function(){
+            oldDept = null
+            oldProgram = null
             let dept_id = parseInt($(this).val());
             let program_select = $('#programs');
             const program_list = DEPTS.find(dept => dept.id == dept_id).programs;
