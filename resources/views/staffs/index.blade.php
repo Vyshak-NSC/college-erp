@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Staffs') }}
+            {{ __('Staff') }}
         </h2>
     </x-slot>
 
@@ -24,7 +24,7 @@
                                         'border-blue-500 text-blue-600 dark:text-blue-400': tab === 'staff',
                                         'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600': tab !== 'staff'
                                     }" 
-                                    class="text-lg font-semibold" class="whitespace-nowrap py-4 px-1 border-b-2 text-sm">Staffs</button>
+                                    class="text-lg font-semibold" class="whitespace-nowrap py-4 px-1 border-b-2 text-sm">Staff</button>
                                 
                                     <button 
                                     @click="tab='assign'" 
@@ -36,7 +36,7 @@
                             </nav>
                             
                             @can('create-staff')
-                                <a href="{{ route('staffs.create') }}"
+                                <a href="{{ route('staff.create') }}"
                                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                     Add Staff
                                 </a>
@@ -65,13 +65,13 @@
                                             <td class="py-3 px-1">{{ $staff->department?->name ?? 'N/A'}}</td>
                                             <td class="py-3 px-1">{{ $staff->designation}}</td>
                                             <td class="py-3 px-1 flex gap-3 justify-center">
-                                                <a href="{{ route('staffs.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>
+                                                <a href="{{ route('staff.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>
                                                 
                                                 @can('edit-staff',$staff)
-                                                    <a href="{{ route('staffs.edit', $staff) }}" class="text-blue-400 hover:underline">Edit</a>
+                                                    <a href="{{ route('staff.edit', $staff) }}" class="text-blue-400 hover:underline">Edit</a>
                                                 @endcan
                                                 @can('delete-staff',$staff)
-                                                    <form action="{{ route('staffs.destroy', $staff).'?origin=department' }}" method="POST"
+                                                    <form action="{{ route('staff.destroy', $staff).'?origin=department' }}" method="POST"
                                                         onsubmit="return confirm('Delete this staff?')">
                                                         @csrf
                                                         @method('DELETE')
@@ -94,7 +94,7 @@
                         <!-- Assign Course -->
                         <div x-show="tab==='assign'">
                             <div class="w-full bg-white dark:bg-gray-800 shadow ">
-                                <form method="POST" action="{{ route('staffs.set-course') }}" class="grid grid-cols-3 gap-4">
+                                <form method="POST" action="{{ route('staff.set-course') }}" class="grid grid-cols-3 gap-4">
                                     @csrf
                                     <!-- Name -->
                                     <div class="mb-4 col-span-1">
@@ -106,7 +106,12 @@
                                                             focus:ring-indigo-500 dark:focus:ring-indigo-600">
                                         <option value="">-- Select Staff --</option>
                                         @foreach ($staffs as $staff)
-                                            <option value="{{ $staff->id }}">{{ $staff->user->name }}</option>
+                                            <option value="{{ $staff->id }}"
+                                                    data-emp-id="{{ $staff->employee_id }}"
+                                                    data-dept-id="{{ $staff->department_id }}"
+                                            >
+                                                {{ $staff->user->name }}
+                                            </option>
                                         @endforeach
                                     </select> 
                                     </div>
@@ -185,8 +190,10 @@
 <script>
     $(document).ready(()=>{
         $('#name').change(function(){
-            let emp_id = $(this).val();
+            let emp_id = $(this).find(':selected').data('emp-id');
+            let dept_id = $(this).find(':selected').data('dept-id');
             $('#employee_id').val(emp_id)
+            $('#department').val(dept_id);
         })
 
         $('#employee_id').on('input',function(){
@@ -196,11 +203,12 @@
                 return;
             }
             let staff = $('#name option').filter(function(){
-                return $(this).val()===emp_id;
-            }).val();
+                return $(this).data('emp-id') === emp_id;
+            });
 
             if(staff){
-                $('#name').val(staff);
+                $('#name').val(staff.val());
+                $('#department').val(staff.data('dept-id'))
                 $('#name option.no-match').remove();
             }else{
                 $('#name option.no-match').remove();

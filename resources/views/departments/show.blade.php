@@ -147,7 +147,7 @@
                         </div>
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Staff Members</h3>
-                            <a href="{{ route('staffs.create', ['_origin'=>'department']) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
+                            <a href="{{ route('staff.create', ['_origin'=>'department']) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
                                 Add Staff
                             </a>
                         </div>
@@ -171,13 +171,13 @@
                                         <td class="p-3">{{ $staff->program?->name ?? 'N/A'}}</td>
                                         <td class="p-3">{{ $staff->designation}}</td>
                                         <td class="p-3 flex gap-3 justify-center">
-                                            <a href="{{ route('staffs.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>
+                                            <a href="{{ route('staff.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>
                                             
                                             @can('edit-staff',$staff)
-                                                <a href="{{ route('staffs.edit', $staff) }}" class="text-blue-400 hover:underline">Edit</a>
+                                                <a href="{{ route('staff.edit', $staff) }}" class="text-blue-400 hover:underline">Edit</a>
                                             @endcan
                                             @can('delete-staff',$staff)
-                                                <form action="{{ route('staffs.destroy', $staff) }}" method="POST"
+                                                <form action="{{ route('staff.destroy', $staff) }}" method="POST"
                                                     onsubmit="return confirm('Delete this staff?')">
                                                     @csrf
                                                     @method('DELETE')

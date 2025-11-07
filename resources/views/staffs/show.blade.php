@@ -55,7 +55,7 @@
                                     <span>{{ __('Back') }}</span>
                                 </a>
 
-                                <a href="{{ route('staffs.edit', $staff) }}"
+                                <a href="{{ route('staff.edit', $staff) }}"
                                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                     <span>{{ __('Edit') }}</span>
                                 </a>
@@ -90,10 +90,10 @@
                                             <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>
                                             
                                             @can('edit-staff',$staff)
-                                                <a href="{{ route('staffs.edit-course', ['staff'=>$staff,'course'=>$course]) }}" class="text-blue-400 hover:underline">Edit</a>
+                                                <a href="{{ route('staff.edit-course', ['staff'=>$staff,'course'=>$course]) }}" class="text-blue-400 hover:underline">Edit</a>
                                             @endcan
                                             @can('delete-staff',$staff)
-                                                <form action="{{ route('staffs.destroy-course', ['staff'=>$staff, 'course'=>$course]) }}" method="POST"
+                                                <form action="{{ route('staff.destroy-course', ['staff'=>$staff, 'course'=>$course]) }}" method="POST"
                                                     onsubmit="return confirm('Delete this staff?')">
                                                     @csrf
                                                     @method('DELETE')
@@ -117,12 +117,12 @@
                                 <span>{{ __('Back') }}</span>
                             </a>
 
-                            <a x-show="selectedTab==='details'" href="{{ route('staffs.edit', $staff) }}"
+                            <a x-show="selectedTab==='details'" href="{{ route('staff.edit', $staff) }}"
                             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                 <span>{{ __('Edit') }}</span>
                             </a>
 
-                            <a x-show="selectedTab==='courses'" href="{{ route('staffs.assign-course', $staff) }}"
+                            <a x-show="selectedTab==='courses'" href="{{ route('staff.assign-course', $staff) }}"
                                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                 Assign Course
                             </a>
