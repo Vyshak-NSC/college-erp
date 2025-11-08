@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class student extends Model
+class 
+Student extends Model
 {
     protected $fillable =[
         'user_id',
@@ -13,6 +14,9 @@ class student extends Model
         'admission_date'
     ];
 
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
     public function department(){
         return $this->belongsTo(Department::class, 'program_id');
     }

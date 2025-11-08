@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\student;
+use App\Models\Department;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -10,9 +11,17 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // $perPage = request('per_page');
+        $departments = Department::with('programs')->get(['id','name']);
+        
+        if($request->ajax()){
+            $students = Student::where('program_id', $request->get('program'))->paginate(10);
+            return view('students._table-partial', compact('students','departments'))->render();
+        }
+        
+        return view('students.index', compact('departments'));
     }
 
     /**
@@ -20,7 +29,8 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        $departments = Department::with('programs')->get(['name','id']) ;
+        return view('students.create', compact('departments'));
     }
 
     /**
@@ -34,7 +44,7 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(student $student)
+    public function show(Student $student)
     {
         //
     }
@@ -42,7 +52,7 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(student $student)
+    public function edit(Student $student)
     {
         //
     }
@@ -50,7 +60,7 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, student $student)
+    public function update(Request $request, Student $student)
     {
         //
     }
@@ -58,7 +68,7 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(student $student)
+    public function destroy(Student $student)
     {
         //
     }

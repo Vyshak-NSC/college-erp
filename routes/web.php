@@ -9,11 +9,11 @@ use App\Http\Controllers\StudentController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/dashboard', function () {
+Route::get('/', function () {
     $users = User::all();
     return view('dashboard', compact('users'));
 })->middleware(['auth'])->name('dashboard');
@@ -24,7 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth','role:admin'])->group(function(){
+// role:admin middleware applicable
+Route::middleware(['auth'])->group(function(){
     Route::resource('departments', DepartmentController::class);
     Route::resource('courses', CourseController::class);
     

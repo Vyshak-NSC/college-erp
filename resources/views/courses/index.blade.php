@@ -18,12 +18,12 @@
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold">All Courses</h3>
                         
-                        @can('create-course')
-                            <a href="{{ route('courses.create') }}"
+                        {{-- @can('create-course')
+                            <!-- <a href="{{ route('courses.create') }}"
                             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                 Add Courses
-                            </a>
-                        @endcan
+                            </a> -->
+                        @endcan --}}
                     </div>
 
                     <table class="w-full text-center border-collapse">
@@ -50,9 +50,10 @@
                                     <td class="p-3 flex gap-3 justify-center">
                                         <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>
                                         
-                                        @can('edit-course',$course)
+                                        {{-- @can('edit-course',$course)
                                             <a href="{{ route('courses.edit', $course) }}" class="text-blue-400 hover:underline">Edit</a>
                                         @endcan
+                                        --}}
                                         @can('delete-course',$course)
                                             <form action="{{ route('courses.destroy', $course) }}" method="POST"
                                                 onsubmit="return confirm('Delete this course?')">

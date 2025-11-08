@@ -89,9 +89,11 @@
                         </div>
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Programs</h3>
-                            <a href="{{ route('programs.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
-                                Add Program
-                            </a>
+                            @can('create-program', $department->id)
+                                <a href="{{ route('programs.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
+                                    Add Program
+                                </a>
+                            @endcan
                         </div>
                         <table class="w-full text-center border-collapse">
                             <thead class="bg-gray-100 dark:bg-gray-700">
@@ -147,17 +149,18 @@
                         </div>
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Staff Members</h3>
-                            <a href="{{ route('staff.create', ['_origin'=>'department']) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
-                                Add Staff
-                            </a>
+                            @can('create-staff', $department->id)
+                                <a href="{{ route('staff.create', ['origin'=>'department']) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
+                                    Add Staff
+                                </a>
+                            @endcan
                         </div>
                         <table class="w-full text-center border-collapse">
                             <thead class="bg-gray-100 dark:bg-gray-700">
                                 <tr>
                                     <th class="p-3">#</th>
                                     <th class="p-3">Name</th>
-                                    <th class="p-3">Department</th>
-                                    <th class="p-3">Program</th>
+                                    <th class="p-3">Employee ID</th>
                                     <th class="p-3">Designation</th>
                                     <th class="p-3">Action</th>
                                 </tr>
@@ -167,8 +170,7 @@
                                     <tr class="border-b border-gray-200 dark:border-gray-700">
                                         <td class="p-3">{{ $loop->iteration }}</td>
                                         <td class="p-3">{{ $staff->user->name }}</td>
-                                        <td class="p-3">{{ $staff->department?->name ?? 'N/A'}}</td>
-                                        <td class="p-3">{{ $staff->program?->name ?? 'N/A'}}</td>
+                                        <td class="p-3">{{ $staff->employee_id}}</td>
                                         <td class="p-3">{{ $staff->designation}}</td>
                                         <td class="p-3 flex gap-3 justify-center">
                                             <a href="{{ route('staff.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>
@@ -204,16 +206,17 @@
                         </div>
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Courses</h3>
-                            <a href="{{ route('courses.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
-                                Add Course
-                            </a>
+                            @can('create-course', $department->id)
+                                <a href="{{ route('courses.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
+                                    Add Course
+                                </a>
+                            @endcan
                         </div>
                         <table class="w-full text-center border-collapse">
                             <thead class="bg-gray-100 dark:bg-gray-700">
                                 <tr>
                                     <th class="p-3">#</th>
                                     <th class="p-3">Name</th>
-                                    <th class="p-3">Department</th>
                                     <th class="p-3">Program</th>
                                     <th class="p-3">Semester</th>
                                     <th class="p-3">Credits</th>
@@ -225,7 +228,6 @@
                                     <tr class="border-b border-gray-200 dark:border-gray-700">
                                         <td class="p-3">{{ $loop->iteration }}</td>
                                         <td class="p-3">{{ $course->name }}</td>
-                                        <td class="p-3">{{ $course->department?->name ?? 'N/A'}}</td>
                                         <td class="p-3">{{ $course->program?->name ?? 'N/A'}}</td>
                                         <td class="p-3">{{ $course->semester ?? 'N/A'}}</td>
                                         <td class="p-3">{{ $course->credits ?? 'N/A'}}</td>

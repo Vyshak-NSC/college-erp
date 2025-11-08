@@ -38,21 +38,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($programs as $dept)
+                            @forelse ($programs as $program)
                                 <tr class="border-b border-gray-200 dark:border-gray-700">
                                     <td class="p-3">{{ $loop->iteration }}</td>
-                                    <td class="p-3">{{ $dept->name }}</td>
-                                    <td class="p-3">{{ $dept->code }}</td>
-                                    <td class="p-3">{{ $dept->department->name }}</td>
-                                    <td class="p-3">{{ $dept->total_semesters }}</td>
+                                    <td class="p-3">{{ $program->name }}</td>
+                                    <td class="p-3">{{ $program->code }}</td>
+                                    <td class="p-3">{{ $program->department }}</td>
+                                    <td class="p-3">{{ $program->total_semesters }}</td>
                                     <td class="p-3 flex gap-3 justify-center">
-                                        <a href="{{ route('programs.show', $dept) }}" class="text-yellow-400 hover:underline">View</a>
+                                        <a href="{{ route('programs.show', $program) }}" class="text-yellow-400 hover:underline">View</a>
                                         
-                                        @can('edit-program',$dept)
-                                            <a href="{{ route('programs.edit', $dept) }}" class="text-blue-400 hover:underline">Edit</a>
-                                        @endcan
-                                        @can('delete-program',$dept)
-                                            <form action="{{ route('programs.destroy', $dept) }}" method="POST"
+                                        
+                                            <a href="{{ route('programs.edit', $program) }}" class="text-blue-400 hover:underline">Edit</a>
+                                       
+                                        @can('delete-program',$program)
+                                            <form action="{{ route('programs.destroy', $program) }}" method="POST"
                                                 onsubmit="return confirm('Delete this program?')">
                                                 @csrf
                                                 @method('DELETE')
