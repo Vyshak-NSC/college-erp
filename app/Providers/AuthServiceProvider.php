@@ -112,12 +112,13 @@ class AuthServiceProvider extends ServiceProvider
 
 
         // ---------- Student ----------
-        Gate::define('view-student', fn (User $user, Student $student) => 
+        Gate::define('view-student', fn (User $user, Student $student=null) => 
                 $user->role === 'admin' || 
+                ($student &&
                 $user->id === $student->user_id ||
                 ($user->role === 'staff' && 
                 in_array($user->staff->designation, ['hod','professor','asst. professor']) &&
-                $user->staff->department_id === $student->department_id)
+                $user->staff->department_id === $student->department_id))
             );
         Gate::define('create-student', fn(User $user) => $user->role === 'admin');
 

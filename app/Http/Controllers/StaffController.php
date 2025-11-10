@@ -21,7 +21,7 @@ class StaffController extends Controller
     {
         $staffs = Staff::all();
         $departments = Department::with('programs.courses')->get(['name','id']);
-        return view('staffs.index',compact('staffs','departments'));
+        return view('staff.index',compact('staffs','departments'));
     }
 
     /**
@@ -30,7 +30,7 @@ class StaffController extends Controller
     public function create()
     {
         $departments = Department::with('programs.courses')->get(['name','id']);
-        return view('staffs.create', compact('departments'));
+        return view('staff.create', compact('departments'));
     }
 
     /**
@@ -94,7 +94,7 @@ class StaffController extends Controller
     {
         $this->authorize('edit-staff', $staff);
         $departments = Department::with('programs.courses')->get(['name','id']);
-        return view('staffs.edit',compact('staff','departments'));
+        return view('staff.edit',compact('staff','departments'));
     }
 
     /**
@@ -139,7 +139,7 @@ class StaffController extends Controller
      */
     public function assignCourse(Staff $staff){
         $departments = Department::with('programs.courses')->get(['name','id']);
-        return view('staffs.assign-course', compact('staff','departments'));
+        return view('staff.assign-course', compact('staff','departments'));
     }
 
     /**
@@ -170,7 +170,7 @@ class StaffController extends Controller
      */
     public function editCourse(Staff $staff, Course $course, Request $request){
         $departments = Department::with('programs.courses')->get(['name','id']);
-        return view('staffs.edit-course', compact('staff', 'course', 'departments'));
+        return view('staff.edit-course', compact('staff', 'course', 'departments'));
     }
     
     /**
