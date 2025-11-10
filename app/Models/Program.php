@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Staff;
 use App\Models\Course;
+use App\Models\Student;
 use App\Models\Department;
 
 use Illuminate\Database\Eloquent\Model;
@@ -18,5 +19,9 @@ class Program extends Model
 
     public function courses(){
         return $this->hasMany(Course::class);
+    }
+
+    public function students(){
+        return $this->hasMany(Student::class);
     }
 }

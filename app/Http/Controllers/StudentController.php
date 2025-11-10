@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Student;
+use App\Models\Program;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -17,10 +18,12 @@ class StudentController extends Controller
         $departments = Department::with('programs')->get(['id','name']);
         
         if($request->ajax()){
-            $students = Student::where('program_id', $request->get('program'))->paginate(10);
-            return view('students._table-partial', compact('students','departments'))->render();
+            $students = Student::where('program_id', $request->get('program'))
+            ->where('semester', $request->get('semester'))
+                                ->paginate(10);
+            return view('students._table-partial', compact('students'))->render();
         }
-        
+
         return view('students.index', compact('departments'));
     }
 
@@ -46,7 +49,7 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        //
+        return view('students.show', compact('student'));
     }
 
     /**

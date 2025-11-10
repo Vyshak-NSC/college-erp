@@ -28,7 +28,7 @@
                         </div>
                         
                         <!-- Program -->
-                        <div class="mb-4">
+                        <div class="mb-4 col-span-1">
                             <x-input-label for="program_id" :value="__('Program')" />
                             <select  id="programs" name="program" class="block w-full mt-1  shadow-sm rounded-md
                                                                     border-gray-300 dark:border-gray-700 
@@ -38,6 +38,19 @@
                                 <option value="">-- Select Program --</option> 
                             </select>
                             <x-input-error :messages="$errors->get('program_id')" class="mt-2" />
+                        </div>
+                        
+                        <!-- Semester -->
+                        <div class="mb-4 col-span-1">
+                            <x-input-label for="program_id" :value="__('Semester')" />
+                            <select  id="semesters" name="semester" class="block w-full mt-1  shadow-sm rounded-md
+                                                                    border-gray-300 dark:border-gray-700 
+                                                                    dark:bg-gray-900 dark:text-gray-300 
+                                                                    focus:border-indigo-500 dark:focus:border-indigo-600 
+                                                                    focus:ring-indigo-500 dark:focus:ring-indigo-600">
+                                <option value="">-- Select Semester --</option> 
+                            </select>
+                            <x-input-error :messages="$errors->get('semester')" class="mt-2" />
                         </div>
 
                         <div class="col-span-3 flex gap-3">
@@ -64,15 +77,17 @@
         filterForm.on('submit',function(e){
             e.preventDefault()
             let program = $('#programs').val();
+            let semester = $('#semesters').val();
+            
             axios.get(url,{
-                params:{program}
+                params:{program,semester}
             })
             .then(res=>{
                 $('#data').html(res.data)
             })
         })
 
-        filterForm.on('click','#data .pagination a',function(){
+        filterForm.on('click','#data .pagination a',function(e){
             e.preventDefault();
             let url = $(this).attr('href');
             let program = $('#programs').val();
@@ -98,6 +113,14 @@
                     <option value='${program.id}' data-total-semesters=${program.total_semesters}>${program.name}</option> 
                 `)
             })
+            
+        })
+        $('#programs').change(function(){
+            let sem_count = $(this).find(':selected').data('total-semesters')
+            $('#semesters').empty().append(`<option>-- Select Semester --</option>`)
+            for(let i=1; i<sem_count+1; i++){
+                $('#semesters').append(`<option value='${i}' >${i}</option>`)
+            };
         })
     });
 </script>

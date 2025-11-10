@@ -45,50 +45,7 @@
 
                         <!-- All Staff -->
                         <div x-show="tab==='staff'">
-                            <table class="w-full text-center border-collapse">
-                                <thead class="bg-gray-100 dark:bg-gray-700">
-                                    <tr>
-                                        <th class="p-3">#</th>
-                                        <th class="p-3">Name</th>
-                                        <th class="p-3">Employee ID</th>
-                                        <th class="p-3">Department</th>
-                                        <th class="p-3">Designation</th>
-                                        <th class="p-3">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($staffs as $staff)
-                                        <tr class="border-b border-gray-200 dark:border-gray-700">
-                                            <td class="py-3 px-1">{{ $loop->iteration }}</td>
-                                            <td class="py-3 px-1">{{ $staff->user->name }}</td>
-                                            <td class="py-3 px-1">{{ $staff->employee_id }}</td>
-                                            <td class="py-3 px-1">{{ $staff->department?->name ?? 'N/A'}}</td>
-                                            <td class="py-3 px-1">{{ $staff->designation}}</td>
-                                            <td class="py-3 px-1 flex gap-3 justify-center">
-                                                <a href="{{ route('staff.show', $staff) }}" class="text-yellow-400 hover:underline">View</a>
-                                                
-                                                @can('edit-staff',$staff)
-                                                    <a href="{{ route('staff.edit', $staff) }}" class="text-blue-400 hover:underline">Edit</a>
-                                                @endcan
-                                                @can('delete-staff',$staff)
-                                                    <form action="{{ route('staff.destroy', $staff).'?origin=department' }}" method="POST"
-                                                        onsubmit="return confirm('Delete this staff?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="text-red-500 hover:underline">Delete</button>
-                                                    </form>
-                                                @endcan
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="p-3 text-center text-gray-500 dark:text-gray-400">
-                                                No staff found.
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                            @include('staff._staff-table-partial')
                         </div>
 
                         <!-- Assign Course -->
@@ -127,7 +84,7 @@
 
                                     <!-- Department -->
                                     <div class="mb-4 col-span-1">
-                                        <x-input-label for="department_id" :value="__('Department')" />
+                                        <x-input-label for="department" :value="__('Department')" />
                                         
                                         <select id="department" class="block w-full mt-1  shadow-sm rounded-md
                                                                             border-gray-300 dark:border-gray-700 
@@ -144,7 +101,7 @@
                                     
                                     <!-- Program -->
                                     <div class="mb-4">
-                                        <x-input-label for="program_id" :value="__('Program')" />
+                                        <x-input-label for="program" :value="__('Program')" />
                                         <select  id="programs" class="block w-full mt-1  shadow-sm rounded-md
                                                                                 border-gray-300 dark:border-gray-700 
                                                                                 dark:bg-gray-900 dark:text-gray-300 
@@ -218,9 +175,8 @@
         })
 
 
-    
-        const DEPTS = @json($departments);
 
+        const DEPTS = @json($departments);
         let oldProgram = "{{ old('program_id') }}";
         let oldDept = "{{ old('department_id') }}";
         
@@ -246,7 +202,7 @@
             let dept_id = program_select.data('dept_id');
 
             let course_select = $('#courses');
-            let programs = null;
+            let program = null;
             DEPTS.find(dept => dept.id == dept_id).programs.forEach(pgm => {
                 if(pgm.id == program_id) program = pgm
             });;

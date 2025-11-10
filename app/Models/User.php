@@ -63,11 +63,11 @@ class User extends Authenticatable
         return $this->role === 'student';
     }
 
-    public function department(){
-        return $this->belongsTo(Department::class);
-    }
-
     public function staff(){
         return $this->hasOne(Staff::class);
+    }
+    
+    public function student(){
+        return $this->hasOne(Student::class);
     }
 }
