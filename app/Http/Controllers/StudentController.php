@@ -18,7 +18,6 @@ class StudentController extends Controller
         $departments = Department::with('programs')->get(['id','name']);
         
         if($request->ajax()){
-            \Log::info('Student filter request', $request->all());
             $query = Student::with('program');
 
             if ($request->filled('department')) {
@@ -33,7 +32,6 @@ class StudentController extends Controller
             if($request->filled('semester')){
                 $query->where('semester',$request->semester);
             }
-            \Log::info('SQL', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
             $students = $query->paginate($request->get('per_page', 5))
                               ->withQueryString();
