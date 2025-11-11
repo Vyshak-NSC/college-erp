@@ -1,29 +1,28 @@
-<div class="flex items-center gap-2 justify-between">
-  
-<div>
-    <label for="per_page">Per page</label>
-      <select id="per_page" name="per_page" 
-      class="block px-3 py-2 border shadow-sm w-20
-         border-gray-300 dark:border-gray-700 rounded-md 
-         bg-white dark:bg-gray-900 focus:outline-none 
-         dark:text-gray-300 dark:focus:ring-indigo-600
-         focus:ring-indigo-500 focus:border-indigo-500
-         text-gray-900" onchange="(function(v){
-                const u = new URL(window.location.href);
-                u.searchParams.set('per_page', v);
-                u.searchParams.delete('page'); // reset page when changing size
-                window.location = u.toString();
-                })(this.value)"
-        >
-        <option value=" 5"   {{ request('per_page') == '5'  ? 'selected' : '' }}>5</option>
-        <option value="10"  {{ request('per_page', '10') == '10' ? 'selected' : '' }}>10</option>
-        <option value="25"  {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
-        <option value="50"  {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
-      </select>
+<div class="mb-5">
+    <div class="flex  items-center gap-2">
+        <label for="per_page">Per page</label>
+        <select id="per_page" name="per_page" 
+        class="block px-1 py-1 border shadow-sm w-20
+            border-gray-300 dark:border-gray-700 rounded-md 
+            bg-white dark:bg-gray-900 focus:outline-none 
+            dark:text-gray-300 dark:focus:ring-indigo-600
+            focus:ring-indigo-500 focus:border-indigo-500
+            text-gray-900" onchange="(function(v){
+                    const u = new URL(window.location.href);
+                    u.searchParams.set('per_page', v);
+                    u.searchParams.delete('page'); // reset page when changing size
+                    window.location = u.toString();
+                    })(this.value)"
+            >
+            <option value=" 5"   {{ request('per_page') == '5'  ? 'selected' : '' }}>5</option>
+            <option value="10"  {{ request('per_page', '10') == '10' ? 'selected' : '' }}>10</option>
+            <option value="25"  {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
+            <option value="50"  {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+        </select>
+    </div>  
+        {{ $students->links() }}
 </div>
 
-  {{ $students->links() }}
-</div>
 <table class="w-full text-center border-collapse">
     <thead class="bg-gray-100 dark:bg-gray-700">
         <tr>
