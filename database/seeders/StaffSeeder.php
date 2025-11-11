@@ -57,6 +57,15 @@ class StaffSeeder extends Seeder
                 'hire_date' => '2017-11-30',
                 'role'=>'staff'
             ],
+            [
+                'name' => 'Dr. Anil Kumar',
+                'email' => 'anil.kumar@college.com',
+                'employee_id' => 'E-105',
+                'designation' => 'Professor',
+                'code' => 'EE',
+                'hire_date' => '2013-9-20',
+                'role'=>'staff'
+            ],
         ];
 
         foreach($staffData as $staff){

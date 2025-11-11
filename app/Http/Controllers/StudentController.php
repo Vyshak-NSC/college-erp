@@ -18,9 +18,29 @@ class StudentController extends Controller
         $departments = Department::with('programs')->get(['id','name']);
         
         if($request->ajax()){
-            $students = Student::where('program_id', $request->get('program'))
-            ->where('semester', $request->get('semester'))
-                                ->paginate(10);
+            \Log::info('Student filter request', $request->all());
+            $query = Student::with('program');
+
+            if ($request->filled('department')) {
+                $query->whereHas('program', function ($q) use ($request) {
+                    $q->where('department_id', $request->department);
+                });
+            }
+            if($request->filled('program')){
+                $query->where('program_id',$request->program);
+            }
+
+            if($request->filled('semester')){
+                $query->where('semester',$request->semester);
+            }
+            \Log::info('SQL', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
+            $students = $query->paginate($request->get('per_page', 5))
+                              ->withQueryString();
+
+            // $students = Student::where('program_id', $request->get('program'))
+            // ->where('semester', $request->get('semester'))
+            //                     ->paginate(10);
             return view('students._table-partial', compact('students'))->render();
         }
 

@@ -42,13 +42,12 @@ class StudentSeeder extends Seeder
         $studentData = [];
 
         foreach($programSemMap as $code => $maxSem){
-            // generate 10 students per program
-            for($i=1;$i<=20;$i++){
+            for($i=1;$i<=50;$i++){
                 $reg = 'S'.date('Y').'-'.str_pad(rand(1,9999),4,'0',STR_PAD_LEFT);
                 $studentData[] = [
                     'name' => $faker->name(),
                     'email' => $faker->unique()->safeEmail(),
-                    'reg_no' => $faker->unique()->numerify('S'.date('Y').'-####'),
+                    'reg_no' => $faker->unique()->numerify('S'.date('y').'-####'),
                     'admission_date' => $faker->dateTimeBetween('-1 years'),
                     'semester' => rand(1,$maxSem),
                     'code' => $code,

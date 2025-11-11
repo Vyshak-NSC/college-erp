@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Studenst') }}
+            {{ __('Students') }}
         </h2>
     </x-slot>
     <div class="py-12">
@@ -14,7 +14,7 @@
                         <div class="mb-4 col-span-1">
                             <x-input-label for="department_id" :value="__('Department')" />
                             
-                            <select id="department" class="block w-full mt-1  shadow-sm rounded-md
+                            <select id="department" class="block w-full mt-2  shadow-sm rounded-md 
                                                                 border-gray-300 dark:border-gray-700 
                                                                 dark:bg-gray-900 dark:text-gray-300 
                                                                 focus:border-indigo-500 dark:focus:border-indigo-600 
@@ -30,7 +30,7 @@
                         <!-- Program -->
                         <div class="mb-4 col-span-1">
                             <x-input-label for="program_id" :value="__('Program')" />
-                            <select  id="programs" name="program" class="block w-full mt-1  shadow-sm rounded-md
+                            <select  id="programs" name="program" class="block w-full mt-2  shadow-sm rounded-md
                                                                     border-gray-300 dark:border-gray-700 
                                                                     dark:bg-gray-900 dark:text-gray-300 
                                                                     focus:border-indigo-500 dark:focus:border-indigo-600 
@@ -43,7 +43,7 @@
                         <!-- Semester -->
                         <div class="mb-4 col-span-1">
                             <x-input-label for="program_id" :value="__('Semester')" />
-                            <select  id="semesters" name="semester" class="block w-full mt-1  shadow-sm rounded-md
+                            <select  id="semesters" name="semester" class="block w-full mt-2  shadow-sm rounded-md
                                                                     border-gray-300 dark:border-gray-700 
                                                                     dark:bg-gray-900 dark:text-gray-300 
                                                                     focus:border-indigo-500 dark:focus:border-indigo-600 
@@ -76,24 +76,26 @@
         // get student list for selected program
         filterForm.on('submit',function(e){
             e.preventDefault()
+            let department = $('#department').val()
             let program = $('#programs').val();
             let semester = $('#semesters').val();
             
             axios.get(url,{
-                params:{program,semester}
+                params:{department, program,semester}
             })
             .then(res=>{
                 $('#data').html(res.data)
             })
         })
 
-        filterForm.on('click','#data .pagination a',function(e){
+        $('#data').on('click','a',function(e){
             e.preventDefault();
             let url = $(this).attr('href');
+            let department = $('#department').val();
             let program = $('#programs').val();
-
+            let semester = $('#semesters').val();
             axios.get(url,{
-                params:{program}
+                params:{department,program,semester}
             })
             .then(res=>{
                 $('#data').html(res.data);
@@ -117,7 +119,7 @@
         })
         $('#programs').change(function(){
             let sem_count = $(this).find(':selected').data('total-semesters')
-            $('#semesters').empty().append(`<option>-- Select Semester --</option>`)
+            $('#semesters').empty().append(`<option value=''>-- Select Semester --</option>`)
             for(let i=1; i<sem_count+1; i++){
                 $('#semesters').append(`<option value='${i}' >${i}</option>`)
             };
