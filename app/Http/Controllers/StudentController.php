@@ -33,12 +33,9 @@ class StudentController extends Controller
                 $query->where('semester',$request->semester);
             }
 
-            $students = $query->paginate($request->get('per_page', 5))
+            $students = $query->paginate($request->get('per_page', 10))
                               ->withQueryString();
 
-            // $students = Student::where('program_id', $request->get('program'))
-            // ->where('semester', $request->get('semester'))
-            //                     ->paginate(10);
             return view('students._table-partial', compact('students'))->render();
         }
 

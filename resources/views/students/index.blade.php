@@ -102,6 +102,17 @@
             })
         })
     
+        $(document).on('change', '#per_page', function(){
+            let department = $('#department').val();
+            let program = $('#programs').val();
+            let semester = $('#semesters').val();
+            let per_page = $(this).val();
+
+            axios.get(url, {
+                params: { department, program, semester, per_page }
+            })
+            .then(res => $('#data').html(res.data))
+        });
 
         $('#department').change(function(){
             let dept_id = parseInt($(this).val());
