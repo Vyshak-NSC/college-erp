@@ -6,13 +6,25 @@
     </x-slot>
 
     <!-- tab container -->
-    <div x-data="{ selectedTab: '{{ request('tab','details') }}' }" class="py-12">
+    <div x-data="{ selectedTab: '{{ request('tab','details') }}' }" class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="border-b border-gray-200 dark:border-gray-700 flex relative">
+                    <div class="flex gap-3 space-x-8 m-2 absolute">
+                        <a href="javascript:history.back()"
+                        class="px-4 py-2 hover:bg-gray-600 text-white rounded">
+                            <span><i class='fas fa-angle-left text-gray-500'></i></span>
+                        </a>
+
+                        @can('edit-department')
+                        <a href="{{ route('departments.edit', $department) }}"
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+                            <span>{{ __('Edit') }}</span>
+                        </a>
+                        @endcan
+                    </div>
                 
-                <div class="border-b border-gray-200 dark:border-gray-700">
-                    <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
-                        
+                    <nav class="ml-10 -mb-px flex space-x-8 px-6" aria-label="Tabs">
                         <button 
                             @click="selectedTab = 'details'"
                             :class="{
@@ -132,19 +144,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-span-3 mt-6 flex gap-3">
-                <a href="javascript:history.back()"
-                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
-                    <span>{{ __('Back') }}</span>
-                </a>
-
-                <a href="{{ route('departments.edit', $department) }}"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
-                    <span>{{ __('Edit') }}</span>
-                </a>
-            </div>
-
         </div>
     </div>
 </x-app-layout>

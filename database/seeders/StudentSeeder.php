@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use App\Models\User;
 use App\Models\Program;
-use App\Models\Student;
+use App\Models\Course;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
@@ -71,12 +71,26 @@ class StudentSeeder extends Seeder
                 'role' => 'student',
             ]);
 
-            $user->student()->create([
+            $student = $user->student()->create([
                 'program_id' => $program->id,
                 'semester' => $student['semester'],
                 'reg_no' => $student['reg_no'],
                 'admission_date' => $student['admission_date']
             ]);
+            $courses = Course::where('program_id', $program->id)
+                             ->where('semester', '<=', $student['semester']) // include all courses up to current semester
+                             ->get();
+ 
+            $student->courses()->sync(
+                $courses->pluck('id')->mapWithKeys(fn($id) => [
+                    $id => [
+                        'Grade' => $faker->randomElement(['A','B','C','D','E','F']),
+                        'Marks' => $faker->randomFloat(2,35,100),
+                        'total_class' => $total_class = $faker->numberBetween(50,80),
+                        'attendance' => $faker->numberBetween($total_class*0.6, $total_class )
+                    ]
+                ])->toArray()
+            );
         }
     }
 }

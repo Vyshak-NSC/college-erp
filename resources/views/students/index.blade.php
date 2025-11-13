@@ -4,7 +4,7 @@
             {{ __('Students') }}
         </h2>
     </x-slot>
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -70,48 +70,54 @@
 <script>
     const PROGRAMS = @json($departments->pluck('programs')->flatten());
     $(document).ready(function(){
-        let filterForm = $('#department-filter')
+
         const url = "{{ route('students.index') }}"
         
+        function getFilters(){
+            return {
+                department : $('#department').val(),
+                program : $('#programs').val(),
+                semester : $('#semesters').val(),
+                per_page : $('#per_page').val() || 10
+            };
+        }
+
+        function fetchStudents(params){
+            axios.get(url, {params})
+                .then(res => $('#data').html(res.data));
+        }
+
+        // get prior search query params if any 
+        const params = Object.fromEntries(new URLSearchParams(window.location.search));
+        if(Object.keys(params).length){
+            // if param exist, refetch it
+            fetchStudents(params);
+        }
+
+        let filterForm = $('#department-filter')
         // get student list for selected program
         filterForm.on('submit',function(e){
             e.preventDefault()
-            let department = $('#department').val()
-            let program = $('#programs').val();
-            let semester = $('#semesters').val();
+            let filters = getFilters();
             
-            axios.get(url,{
-                params:{department, program,semester}
-            })
-            .then(res=>{
-                $('#data').html(res.data)
-            })
+            history.pushState({},'',`${url}?${$.param(filters)}`);
+            fetchStudents(filters);
         })
 
-        $('#data').on('click','a',function(e){
+        $('#data').on('click','a:not(.no-ajax)',function(e){
+            const targetUrl = $(this).attr('href');
             e.preventDefault();
-            let url = $(this).attr('href');
-            let department = $('#department').val();
-            let program = $('#programs').val();
-            let semester = $('#semesters').val();
-            axios.get(url,{
-                params:{department,program,semester}
-            })
-            .then(res=>{
-                $('#data').html(res.data);
-            })
+
+            const filters = getFilters();
+            history.pushState({},'',`${targetUrl}?${$.param(filters)}`);
+            fetchStudents(filters);
         })
     
-        $(document).on('change', '#per_page', function(){
-            let department = $('#department').val();
-            let program = $('#programs').val();
-            let semester = $('#semesters').val();
-            let per_page = $(this).val();
-
-            axios.get(url, {
-                params: { department, program, semester, per_page }
-            })
-            .then(res => $('#data').html(res.data))
+        $(document).on('change', '#per_page',()=>{
+            let filters = getFilters();
+            delete filters.page
+            history.pushState({},'', `${url}&${$.param(filters)}`)
+            fetchStudents(filters)
         });
 
         $('#department').change(function(){

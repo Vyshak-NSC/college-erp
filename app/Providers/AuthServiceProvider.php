@@ -90,23 +90,23 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('view-staff', fn () => true);
         Gate::define('create-staff', fn(User $user, $dept_id=null): bool =>  $user->role === 'admin' || 
                 ($dept_id && $user->role === 'staff' &&
-                $user->staff->designation === 'hod' &&
+                $user->staff?->designation === 'hod' &&
                 $user->staff->department_id === $dept_id)
             );
         Gate::define('edit-staff', fn (User $user, Staff $staff) => $user->role === 'admin' ||
                 ($user->role === 'staff' &&
                 $user->id === $staff->user_id) ||
-                ($user->staff->designation === 'hod' &&
+                ($user->staff?->designation === 'hod' &&
                 $user->staff->department_id === $staff->department_id)
             );
         Gate::define('update-staff', fn (User $user, Staff $staff) => $user->role === 'admin' || 
                 ($user->role === 'staff' &&
-                $user->staff->designation === 'hod' &&
+                $user->staff?->designation === 'hod' &&
                 $user->staff->department_id === $staff->department_id)
             );
         Gate::define('delete-staff', fn (User $user, Staff $staff) => $user->role === 'admin' || 
                 ($user->role === 'staff' &&
-                $user->staff->designation === 'hod' &&
+                $user->staff?->designation === 'hod' &&
                 $user->staff->department_id === $staff->department_id)
             );
 

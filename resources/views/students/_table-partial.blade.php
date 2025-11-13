@@ -47,10 +47,10 @@
                 <td class="py-3 px-1">{{ $student->semester }}</td>
                 <td class="py-3 px-1">{{ $student->user->email }}</td>
                 <td class="py-3 px-1 gap-3 whitespace-nowrap">
-                    <a href="{{ route('students.show', $student) }}" class="mx-1 text-yellow-400 hover:text-yellow-200">View</a>
+                    <a href="{{ route('students.show', $student) }}" class="no-ajax mx-1 text-yellow-400 hover:text-yellow-200">View</a>
                     
                     @can('edit-student',$student)
-                        <a href="{{ route('students.edit', $student) }}" class="mx-1 text-blue-400 hover:text-blue-200">Edit</a>
+                        <a href="{{ route('students.edit', $student) }}" class="no-ajax mx-1 text-blue-400 hover:text-blue-200">Edit</a>
                     @endcan
                     @can('delete-student',$student)
                         <form action="{{ route('students.destroy', $student) }}" method="POST"

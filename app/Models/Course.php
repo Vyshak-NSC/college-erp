@@ -20,4 +20,10 @@ class Course extends Model
     public function staff(){
         return $this->belongsToMany(Staff::class);
     }
+
+    public function students(){
+        return $this->belongsToMany(Student::class)
+                    ->withPivot('grade','marks','attendance')
+                    ->withTimestamps();
+    }
 }

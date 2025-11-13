@@ -70,4 +70,8 @@ class User extends Authenticatable
     public function student(){
         return $this->hasOne(Student::class);
     }
+    
+    public function department(){
+        return $this->hasOne(Department::class);
+    }
 }
