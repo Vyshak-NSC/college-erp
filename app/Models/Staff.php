@@ -24,6 +24,8 @@ class Staff extends Model
     }
 
     public function courses(){
-        return $this->belongsToMany(Course::class);
+        return $this->belongsToMany(Course::class)
+                    ->withPivot('course_id')
+                    ->withTimestamps();;
     }
 }

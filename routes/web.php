@@ -15,13 +15,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $user = Auth::user();
-    $users = User::all();
+    $role = $user->role;
     if($user->isStudent()){
         $sem = $user->student->semester;
-        $user->load(['student.program.department','student.courses' => fn($q) => $q->where('semester',$sem)]);    
+        $student = $user->load(['student.program.department','student.courses' => fn($q) => $q->where('semester',$sem)]);    
+        return view('dashboard', compact('role','student'));
     }
-    return view('dashboard', compact('user', 'users'));
+    elseif($user->isStaff()){
+        $id = $user->staff->id;
+        $staff = $user->staff->load(['courses' => fn($q) => $q->where('staff_id',$id)]);    
+        return view('dashboard', compact('role','staff'));
+    }
+    else{
+        $admin = $user;
+        $users = User::all();
+        return view('dashboard', compact('role','admin','users'));
+    }
 })->middleware(['auth'])->name('dashboard');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

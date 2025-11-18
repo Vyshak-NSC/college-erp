@@ -6,19 +6,18 @@
     </x-slot>
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form id="department-filter" method="GET" class="grid grid-cols-3 gap-4 mb-4 p-2">
+                    <form id="department-filter" method="GET" class="grid grid-cols-3 gap-4 p-2">
                         <!-- Department -->
-                        <div class="mb-4 col-span-1">
+                        <div class="col-span-1">
                             <x-input-label for="department_id" :value="__('Department')" />
-                            
-                            <select id="department" class="block w-full mt-2  shadow-sm rounded-md 
-                                                                border-gray-300 dark:border-gray-700 
-                                                                dark:bg-gray-900 dark:text-gray-300 
-                                                                focus:border-indigo-500 dark:focus:border-indigo-600 
-                                                                focus:ring-indigo-500 dark:focus:ring-indigo-600">
+                            <select id="department"
+                                    class="block w-full mt-2  shadow-sm rounded-md 
+                                        border-gray-300 dark:border-gray-700 
+                                        dark:bg-gray-900 dark:text-gray-300 
+                                        focus:border-indigo-500 dark:focus:border-indigo-600 
+                                        focus:ring-indigo-500 dark:focus:ring-indigo-600">
                                 <option value="">-- Select Department --</option>
                                 @foreach ($departments as $dept)
                                     <option value="{{ $dept->id }}" @selected(old('department_id')==$dept->id)>{{ $dept->name }}</option>
@@ -48,17 +47,24 @@
                                                                     dark:bg-gray-900 dark:text-gray-300 
                                                                     focus:border-indigo-500 dark:focus:border-indigo-600 
                                                                     focus:ring-indigo-500 dark:focus:ring-indigo-600">
-                                <option value="">-- Select Semester --</option> 
+                                <option value="">-- Select Semester --</option>
+                                @for ($i=1; $i<=8;$i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
                             </select>
                             <x-input-error :messages="$errors->get('semester')" class="mt-2" />
                         </div>
 
-                        <div class="col-span-3 flex gap-3">
-                            <x-primary-button>{{ __('Submit') }}</x-primary-button>
+                        <div class="col-span-3 flex gap-3 justify-end">
+                            <x-primary-button class="my-auto">{{ __('All') }}</x-primary-button>
+                            <div class="relative">
+                            <label class="absolute text-gray-500 -top-5">Search :</label>
+                                <x-text-input  id="search" name="search" class="my-1"/>
+                            </div>
                         </div>
                     </form>
 
-                    <div id="data" class="">
+                    <div id="data">
                        
                     </div>
                 </div>
@@ -71,19 +77,21 @@
     const PROGRAMS = @json($departments->pluck('programs')->flatten());
     $(document).ready(function(){
 
-        const url = "{{ route('students.index') }}"
         
+        // ========== begin helper functions ==========
         function getFilters(){
             return {
                 department : $('#department').val(),
                 program : $('#programs').val(),
                 semester : $('#semesters').val(),
-                per_page : $('#per_page').val() || 10
+                per_page : $('#per_page').val() || 10,
             };
         }
-
-        function fetchStudents(params){
-            axios.get(url, {params})
+        
+        const url = "{{ route('students.index') }}" 
+        // get the student from url
+        function fetchStudents(params, targeturl = url){
+            axios.get(targeturl, {params})
                 .then(res => $('#data').html(res.data));
         }
 
@@ -91,35 +99,57 @@
         const params = Object.fromEntries(new URLSearchParams(window.location.search));
         if(Object.keys(params).length){
             // if param exist, refetch it
+            // allows refecth if returned to page or refreshed
             fetchStudents(params);
         }
 
+
+        // ========== end helper | begin filter handler ==========
+
         let filterForm = $('#department-filter')
-        // get student list for selected program
-        filterForm.on('submit',function(e){
+        // fetch filtered student list on submit
+        filterForm.on('change',function(e){
             e.preventDefault()
             let filters = getFilters();
             
+            // add updated url to history
             history.pushState({},'',`${url}?${$.param(filters)}`);
             fetchStudents(filters);
         })
 
         $('#data').on('click','a:not(.no-ajax)',function(e){
-            const targetUrl = $(this).attr('href');
+            // get paginated url
+            const href = $(this).attr('href');
             e.preventDefault();
+            // get prior params
+            let filters = getFilters();
 
-            const filters = getFilters();
-            history.pushState({},'',`${targetUrl}?${$.param(filters)}`);
-            fetchStudents(filters);
+            fetchStudents(filters, href);
         })
     
+        // check for pagination size changes
         $(document).on('change', '#per_page',()=>{
             let filters = getFilters();
+            // reset current page to 1
             delete filters.page
-            history.pushState({},'', `${url}&${$.param(filters)}`)
+            const separator = url.includes('?') ? '&' : '?'
+            history.pushState({},'', `${url}${separator}${$.param(filters)}`)
             fetchStudents(filters)
         });
 
+        $('#search').on('input', () => {
+            $search_query = $('#search').val();
+            if($search_query != ''){
+                let filters = getFilters();
+                filters = {...filters, search:$search_query};
+                fetchStudents(filters);
+            }
+        })
+
+
+        // ========== end filter handler | begin dropdown handler ==========
+
+        // set program list for department
         $('#department').change(function(){
             let dept_id = parseInt($(this).val());
             let program_select = $('#programs');
@@ -133,13 +163,6 @@
                 `)
             })
             
-        })
-        $('#programs').change(function(){
-            let sem_count = $(this).find(':selected').data('total-semesters')
-            $('#semesters').empty().append(`<option value=''>-- Select Semester --</option>`)
-            for(let i=1; i<sem_count+1; i++){
-                $('#semesters').append(`<option value='${i}' >${i}</option>`)
-            };
         })
     });
 </script>

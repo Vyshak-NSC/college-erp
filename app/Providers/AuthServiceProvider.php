@@ -96,18 +96,18 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('edit-staff', fn (User $user, Staff $staff) => $user->role === 'admin' ||
                 ($user->role === 'staff' &&
                 $user->id === $staff->user_id) ||
-                ($user->staff?->designation === 'hod' &&
-                $user->staff->department_id === $staff->department_id)
+                ($user?->staff?->designation === 'hod' &&
+                $user?->staff->department_id === $staff->department_id)
             );
         Gate::define('update-staff', fn (User $user, Staff $staff) => $user->role === 'admin' || 
                 ($user->role === 'staff' &&
-                $user->staff?->designation === 'hod' &&
-                $user->staff->department_id === $staff->department_id)
+                $user?->staff?->designation === 'hod' &&
+                $user?->staff?->department_id === $staff->department_id)
             );
         Gate::define('delete-staff', fn (User $user, Staff $staff) => $user->role === 'admin' || 
                 ($user->role === 'staff' &&
-                $user->staff?->designation === 'hod' &&
-                $user->staff->department_id === $staff->department_id)
+                $user?->staff?->designation === 'hod' &&
+                $user?->staff?->department_id === $staff->department_id)
             );
 
 
@@ -117,8 +117,8 @@ class AuthServiceProvider extends ServiceProvider
                 ($student &&
                 $user->id === $student->user_id ||
                 ($user->role === 'staff' && 
-                in_array($user->staff->designation, ['hod','professor','asst. professor']) &&
-                $user->staff->department_id === $student->department_id))
+                in_array($user?->staff?->designation, ['hod','professor','asst. professor']) &&
+                $user?->staff->department_id === $student->department_id))
             );
         Gate::define('create-student', fn(User $user) => $user->role === 'admin');
 
@@ -126,15 +126,15 @@ class AuthServiceProvider extends ServiceProvider
                 $user->role === 'admin' || 
                 $user->id === $student->user_id ||  
                 ($user->role === 'staff' &&
-                $user->staff->designation === 'hod' &&
-                $user->staff->department_id === $student->department_id)
+                $user?->staff?->designation === 'hod' &&
+                $user?->staff?->department_id === $student->department_id)
             );
         Gate::define('update-student', fn (User $user, Student $student) => 
                 $user->role === 'admin' || 
                 $user->id === $student->user_id ||  
                 ($user->role === 'staff' &&
-                $user->staff->designation === 'hod' &&
-                $user->staff->department_id === $student->department_id));
+                $user?->staff?->designation === 'hod' &&
+                $user?->staff?->department_id === $student->department_id));
         Gate::define('delete-student', fn (User $user) =>$user->role === 'admin');
     }
 }

@@ -135,9 +135,10 @@
                         },
 
                         tooltip: {
-                            usePointStyle: true,
-                            boxWidth: 8,
-                            boxHeight: 8,
+                            enabled:false,
+                            // usePointStyle: true,
+                            // boxWidth: 8,
+                            // boxHeight: 8,
                         }
                     }
                 }

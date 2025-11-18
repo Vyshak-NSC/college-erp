@@ -7,9 +7,6 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 gap-5">
-            @php
-                $role = auth()->user()->role;
-            @endphp
             @include('partials._'.$role.'-dashboard')
         </div>
     </div>

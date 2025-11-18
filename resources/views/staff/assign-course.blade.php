@@ -132,21 +132,26 @@
             })
         })
 
-        // Set semester limit
+        // Set course list
         $('#programs').change(function(){
             let program_select = $(this).find(':selected');
             let program_id = program_select.val();
             let dept_id = program_select.data('dept_id');
             
             let course_select = $('#courses');
-            let programs = null;
-            DEPTS.find(dept => dept.id == dept_id).programs.forEach(pgm => {
-                if(pgm.id = program_id) program = pgm
-            });;
-            
+            let program = null;
+            let pgms = DEPTS.find(dept => dept.id == dept_id).programs
+
+            pgms.forEach(pgm => {
+                console.log(pgm.id +' '+program_id);
+                if(pgm.id == program_id){
+                    program = pgm;
+                    console.log('-000000000000000000-')
+                }
+            });
             let course_list = program ? program.courses : ''
 
-            course_select.empty().append(`<option value="">-- Select Course --</option>`);
+            course_select.empty().append(`<option value="">--> Select Course --</option>`);
 
             course_list.forEach(course => {
                 course_select.append(`

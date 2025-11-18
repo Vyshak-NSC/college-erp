@@ -9,19 +9,12 @@
     <div x-data="{ selectedTab: '{{ request('tab','details') }}' }" class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="border-b border-gray-200 dark:border-gray-700 flex relative">
+                <div class="border-b border-gray-200 dark:border-gray-700 flex relative justify-between">
                     <div class="flex gap-3 space-x-8 m-2 absolute">
                         <a href="javascript:history.back()"
                         class="px-4 py-2 hover:bg-gray-600 text-white rounded">
                             <span><i class='fas fa-angle-left text-gray-500'></i></span>
                         </a>
-
-                        @can('edit-department')
-                        <a href="{{ route('departments.edit', $department) }}"
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
-                            <span>{{ __('Edit') }}</span>
-                        </a>
-                        @endcan
                     </div>
                 
                     <nav class="ml-10 -mb-px flex space-x-8 px-6" aria-label="Tabs">
@@ -65,6 +58,14 @@
                             Courses ({{ $department->courses->count() }})
                         </button>
                     </nav>
+                    @can('edit-department')
+                        <div class="my-auto px-6">
+                            <a href="{{ route('departments.edit', $department) }}"
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+                                <span>{{ __('Edit') }}</span>
+                            </a>
+                        </div>
+                    @endcan
                 </div>
 
                 <div class="p-6 text-gray-900 dark:text-gray-100">

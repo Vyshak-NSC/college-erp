@@ -49,6 +49,9 @@
                             
                             <span class="col-span-1 font-semibold ml-5">{{ __('Admission Date:') }}</span>
                             <span class="col-span-3">: {{ $student->admission_date }}</span>
+                            
+                            <span class="col-span-1 font-semibold ml-5">{{ __('Email:') }}</span>
+                            <span class="col-span-3">: {{ $student->user->email }}</span>
 
                             <div class="col-span-3 mt-6 flex gap-3">
                                 <a href="javascript:history.back()"
@@ -67,13 +70,14 @@
                     <!-- Courses -->
                     <div x-show="selectedTab === 'courses'">
                         <h3 class="text-xl font-semibold mb-4 mt-4 flex justify-between">
-                            Courses Assigned
+                            Enrolled Courses
                         </h3>
                         <table class="w-full text-center border-collapse">
                             <thead class="bg-gray-100 dark:bg-gray-700">
                                 <tr>
                                     <th class="p-3">#</th>
                                     <th class="p-3">Course Name</th>
+                                    <th class="p-3">Course Code</th>
                                     <th class="p-3">Department</th>
                                     <th class="p-3">Program</th>
                                     <th class="p-3">Action</th>
@@ -81,28 +85,31 @@
                             </thead>
                             <tbody>
                                 @forelse ($student->program->courses as $course)
-                                    <tr class="border-b border-gray-200 dark:border-gray-700">
-                                        <td class="py-3 px-1">{{ $loop->iteration }}</td>
-                                        <td class="py-3 px-1">{{ $course->name }}</td>
-                                        <td class="py-3 px-1">{{ $course->department->name }}</td>
-                                        <td class="py-3 px-1">{{ $course->program->name }}</td>
-                                        
-                                        <td class="py-3 px-1 flex gap-3 justify-center">
-                                            <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>
+                                    @if($course->semester == $student->semester)
+                                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                                            <td class="py-3 px-1">{{ $loop->iteration }}</td>
+                                            <td class="py-3 px-1">{{ $course->name }}</td>
+                                            <td class="py-3 px-1">{{ $course->code }}</td>
+                                            <td class="py-3 px-1">{{ $course->department->name }}</td>
+                                            <td class="py-3 px-1">{{ $course->program->name }}</td>
                                             
-                                            @can('edit-student',$student)
-                                                <a href="{{ route('staff.edit-course', ['staff'=>$student,'course'=>$course]) }}" class="text-blue-400 hover:underline">Edit</a>
-                                            @endcan
-                                            @can('delete-student',$student)
-                                                <form action="{{ route('staff.destroy-course', ['staff'=>$student, 'course'=>$course]) }}" method="POST"
-                                                    onsubmit="return confirm('Delete this staff?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="text-red-500 hover:underline">Delete</button>
-                                                </form>
-                                            @endcan
-                                        </td>
-                                    </tr>
+                                            <td class="py-3 px-1 flex gap-3 justify-center">
+                                                <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>
+                                                
+                                                @can('edit-student',$student)
+                                                    <a href="{{ route('staff.edit-course', ['staff'=>$student,'course'=>$course]) }}" class="text-blue-400 hover:underline">Edit</a>
+                                                @endcan
+                                                @can('delete-student',$student)
+                                                    <form action="{{ route('staff.destroy-course', ['staff'=>$student, 'course'=>$course]) }}" method="POST"
+                                                        onsubmit="return confirm('Delete this staff?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="text-red-500 hover:underline">Delete</button>
+                                                    </form>
+                                                @endcan
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @empty
                                     <tr>
                                         <td colspan="5" class="p-3 text-center text-gray-500 dark:text-gray-400">

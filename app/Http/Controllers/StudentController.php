@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
+use App\Models\User;
 use App\Models\Student;
-use App\Models\Program;
+use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -15,10 +16,12 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         // $perPage = request('per_page');
+        // dd($request->all());
         $departments = Department::with('programs')->get(['id','name']);
-        
+        $user = Auth::user()->load('staff.department');
+        $department = $user->staff?->department;
         if($request->ajax()){
-            $query = Student::with('program');
+            $query = Student::with(['program','user']);
 
             if ($request->filled('department')) {
                 $query->whereHas('program', function ($q) use ($request) {
@@ -32,14 +35,35 @@ class StudentController extends Controller
             if($request->filled('semester')){
                 $query->where('semester',$request->semester);
             }
+            
+            if($request->filled('search')){
+                // get search query and list of column
+                $search = "%$request->search%";
+                $columns = ['reg_no'];
+                $userColumns = ['name','email'];
 
+                // compare search query with name and email in user table
+                $query->whereHas('user', function($qu) use ($userColumns, $search){
+                    foreach($userColumns as $column){
+                        $qu->orWhere($column, 'LIKE', $search);
+                    }
+                });
+
+                // check search query with reg_no in student table
+                $query->orWhere(function($q) use ($columns, $search){
+                    foreach($columns as $column){
+                        $q->orWhere($column, 'LIKE', $search);
+                    }
+                }) ;
+            }
+            $query->orderBy('semester','asc');
             $students = $query->paginate($request->get('per_page', 10))
                               ->withQueryString();
 
             return view('students._table-partial', compact('students'))->render();
         }
 
-        return view('students.index', compact('departments'));
+        return view('students.index', compact('user','departments'));
     }
 
     /**

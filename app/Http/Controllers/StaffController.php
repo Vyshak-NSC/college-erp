@@ -84,7 +84,9 @@ class StaffController extends Controller
      */
     public function show(Staff $staff)
     {
-        return view('staff.show', compact('staff'));
+        $department = $staff->department;
+        $this->authorize('view-staff');
+        return view('staff.show', compact('staff', 'department'));
     }
 
     /**

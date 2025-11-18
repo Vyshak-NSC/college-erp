@@ -70,7 +70,9 @@ class StaffSeeder extends Seeder
 
         foreach($staffData as $staff){
             $department = Department::where('code', $staff['code'])->first();
-
+            
+            echo $department;
+            echo "\n\n";
             if (!$department) {
                 throw new \Exception("Department with code '{$staff['code']}' not found. Staff '{$staff['name']}' cannot be created.");
             }
