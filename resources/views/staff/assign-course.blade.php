@@ -146,7 +146,6 @@
                 console.log(pgm.id +' '+program_id);
                 if(pgm.id == program_id){
                     program = pgm;
-                    console.log('-000000000000000000-')
                 }
             });
             let course_list = program ? program.courses : ''
