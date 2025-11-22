@@ -124,8 +124,6 @@
             e.preventDefault()
             let filters = getFilters();
             
-            // add updated url to history
-            history.pushState({},'',`${url}?${$.param(filters)}`);
             fetchStudents(filters);
         })
 
@@ -145,7 +143,6 @@
             // reset current page to 1
             delete filters.page
             const separator = url.includes('?') ? '&' : '?'
-            history.pushState({},'', `${url}${separator}${$.param(filters)}`)
             fetchStudents(filters)
         });
 

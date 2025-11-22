@@ -102,7 +102,9 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        //
+        $this->authorize('edit-student', $student);
+        $departments = Department::with('programs')->get(['id','name']);
+        return view('students.edit', compact('student', 'departments'));
     }
 
     /**
@@ -110,7 +112,30 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        //
+        // dd($request->all());
+        $this->authorize('update-student', $student);
+        $validated = $request->validate([
+            'name' => "nullable|string",
+            'email' => "nullable|email",
+            'department_id' => "nullable|integer|exists:departments,id",
+            'program_id' => "nullable|integer|exists:programs,id",
+            'semester' => "nullable|integer|min:1|max:8",
+            'admission_date' => "nullable|date"
+        ]);
+
+        $student->user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email']
+        ]);
+
+        $student->update([
+            'department_id' => $validated['department_id'],
+            'program_id' => $validated['program_id'],
+            'semester' => $validated['semester'],
+            'admission_date' => $validated['admission_date'],
+        ]);
+
+        return redirect()->route('students.show',$student->id)->with('success','Student updated successfully');
     }
 
     /**

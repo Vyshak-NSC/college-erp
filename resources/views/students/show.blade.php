@@ -54,12 +54,12 @@
                             <span class="col-span-3">: {{ $student->user->email }}</span>
 
                             <div class="col-span-3 mt-6 flex gap-3">
-                                <a href="javascript:history.back()"
+                                <a href="{{ route('students.index') }}"
                                 class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
                                     <span>{{ __('Back') }}</span>
                                 </a>
 
-                                <a href="{{ route('staff.edit', $student) }}"
+                                <a href="{{ route('students.edit', $student) }}"
                                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                     <span>{{ __('Edit') }}</span>
                                 </a>
@@ -128,11 +128,6 @@
                             <a x-show="selectedTab==='details'" href="{{ route('staff.edit', $student) }}"
                             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
                                 <span>{{ __('Edit') }}</span>
-                            </a>
-
-                            <a x-show="selectedTab==='courses'" href="{{ route('staff.assign-course', $student) }}"
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
-                                Assign Course
                             </a>
                         </div>
                     </div>

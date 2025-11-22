@@ -108,14 +108,15 @@ class StaffController extends Controller
         $this->authorize('update-staff',$staff);
         $validated = $request->validate([
             'name'=>'nullable|string|max:30',
-            'email'=>'nullable|string|max:30',
+            'email'=>'nullable|email|max:30',
             'designation'=>'nullable|string|max:30',
             'employee_id' => 'nullable|string|max:10',
             'hire_date'=> 'nullable|date',
             'department_id'=>'nullable|integer|exists:departments,id'
         ]);
         $staff->user->update([
-            'name'=>$validated['name']
+            'name'=>$validated['name'],
+            'email'=>$validated['email']
         ]);
         $staff->update([
             'designation'=> $validated['designation'],
