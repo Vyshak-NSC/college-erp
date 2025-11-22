@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
     Route::get('/staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
+
+    Route::delete('/students/bulk-delete', [StudentController::class, 'bulkDelete'])->name('students.bulk-delete');
 });
 
 // role:admin middleware applicable

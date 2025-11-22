@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg text-gray-900 dark:text-gray-100">
                 <div x-data="{ selectedTab: '{{ request('tab','details') }}' }">
@@ -69,6 +69,9 @@
                                 
                                 <span class="col-span-1 font-semibold ml-5">{{ __('Hire Date:') }}</span>
                                 <span class="col-span-3">: {{ $staff->hire_date }}</span>
+                                
+                                <span class="col-span-1 font-semibold ml-5">{{ __('Email:') }}</span>
+                                <span class="col-span-3">: {{ $staff->user->email }}</span>
                             </div>
                         </div>
 
@@ -84,6 +87,7 @@
                                         <th class="p-3">Course Name</th>
                                         <th class="p-3">Department</th>
                                         <th class="p-3">Program</th>
+                                        <th class="p-3">Semester</th>
                                         <th class="p-3">Action</th>
                                     </tr>
                                 </thead>
@@ -94,6 +98,7 @@
                                             <td class="py-3 px-1">{{ $course->name }}</td>
                                             <td class="py-3 px-1">{{ $course->department->name }}</td>
                                             <td class="py-3 px-1">{{ $course->program->name }}</td>
+                                            <td class="py-3 px-1">{{ $course->semester }}</td>
                                             
                                             <td class="py-3 px-1 flex gap-3 justify-center">
                                                 <a href="{{ route('courses.show', $course) }}" class="text-yellow-400 hover:underline">View</a>

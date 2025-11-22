@@ -6,6 +6,16 @@
     </x-slot>
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session('success'))
+                <!-- <div class="mb-4 p-3 rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"> -->
+                <div
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-init="setTimeout(() => show = false, 3000)"
+                    class="mb-4 p-3 bg-green-600/80 rounded bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form id="department-filter" method="GET" class="grid grid-cols-3 gap-4 p-2">
@@ -76,7 +86,8 @@
 <script>
     const PROGRAMS = @json($departments->pluck('programs')->flatten());
     $(document).ready(function(){
-
+        let countSelected = $('input[name="select[]"]:checked').length
+        
         
         // ========== begin helper functions ==========
         function getFilters(){
@@ -85,6 +96,7 @@
                 program : $('#programs').val(),
                 semester : $('#semesters').val(),
                 per_page : $('#per_page').val() || 10,
+                search  : $('#search').val()
             };
         }
         
@@ -139,11 +151,9 @@
 
         $('#search').on('input', () => {
             $search_query = $('#search').val();
-            if($search_query != ''){
-                let filters = getFilters();
-                filters = {...filters, search:$search_query};
-                fetchStudents(filters);
-            }
+            let filters = getFilters();
+            filters = {...filters, search:$search_query};
+            fetchStudents(filters);
         })
 
 
@@ -164,5 +174,36 @@
             })
             
         })
+        // ========== end dropdown handler | begin bulk delete handler ==========
+
+        // check all checkboxes
+        $(document).on('click', '#select-all', function () {
+            const checked = $(this).prop('checked');
+            // if(checked){
+                $('input[name="select[]"]').prop('checked', checked).trigger('change');
+            // }
+        });
+
+        $(document).on('change','input[name="select[]"]', function(){
+            countSelected = $('input[name="select[]"]:checked').length;
+            if(countSelected < $('#per_page').val()){
+                $('#select-all').prop('checked',false)
+            }
+            $('#delete').text(`Delete (${countSelected})`)
+        })
+
+        // enter select deletion
+        $(document).on('click', '#bulk-delete', function(){
+            if($('#delete').data('submit-ready')){
+                $('#bulk-delete-form').submit()
+            }else{
+                $('#delete').data('submit-ready',true)
+                $('.selector.hidden').removeClass('hidden');
+                $('#delete')
+                    .addClass('text-red-500')
+                    .text(`Delete (${countSelected})`);
+            }
+        })
+        // ========== end bulk delete handler ==========
     });
 </script>

@@ -39,27 +39,33 @@ class StudentController extends Controller
             if($request->filled('search')){
                 // get search query and list of column
                 $search = "%$request->search%";
-                $columns = ['reg_no'];
+                $studentColumns = ['reg_no'];
                 $userColumns = ['name','email'];
+                
+                $query->where(function($group) use ($search, $studentColumns, $userColumns) {
+                    // search in user table
+                    $group->whereHas('user', function($u) use ($search, $userColumns) {
+                        $u->where(function($userGroup) use ($search, $userColumns) {
+                            foreach ($userColumns as $col) {
+                                $userGroup->orWhere($col, 'LIKE', $search);
+                            }
+                        });
+                    });
 
-                // compare search query with name and email in user table
-                $query->whereHas('user', function($qu) use ($userColumns, $search){
-                    foreach($userColumns as $column){
-                        $qu->orWhere($column, 'LIKE', $search);
-                    }
+                    // search in student table
+                    $group->orWhere(function($studentGroup) use ($search, $studentColumns) {
+                        foreach ($studentColumns as $col) {
+                            $studentGroup->orWhere($col, 'LIKE', $search);
+                        }
+                    });
+
                 });
 
-                // check search query with reg_no in student table
-                $query->orWhere(function($q) use ($columns, $search){
-                    foreach($columns as $column){
-                        $q->orWhere($column, 'LIKE', $search);
-                    }
-                }) ;
             }
             $query->orderBy('semester','asc');
             $students = $query->paginate($request->get('per_page', 10))
                               ->withQueryString();
-
+            // return $students;
             return view('students._table-partial', compact('students'))->render();
         }
 
@@ -113,5 +119,13 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         //
+    }
+
+    public function bulkDelete(Request $request){
+        $ids = $request->input('select',[]);
+        if(!empty($ids)){
+            Student::whereIn('id',$ids)->delete();
+        }
+        return back()->with('success', 'Deleted selected students');
     }
 }
