@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="col-span-3 flex gap-3 justify-end">
-                            <x-primary-button class="my-auto">{{ __('All') }}</x-primary-button>
+                            <x-primary-button class="my-auto" id="get-all">{{ __('All') }}</x-primary-button>
                             <div class="relative">
                             <label class="absolute text-gray-500 -top-5">Search :</label>
                                 <x-text-input  id="search" name="search" class="my-1"/>
@@ -90,6 +90,8 @@
         
         
         // ========== begin helper functions ==========
+        const url = "{{ route('students.index') }}" 
+        
         function getFilters(){
             return {
                 department : $('#department').val(),
@@ -100,9 +102,8 @@
             };
         }
         
-        const url = "{{ route('students.index') }}" 
         // get the student from url
-        function fetchStudents(params, targeturl = url){
+        function fetchStudents(params=[], targeturl = url){
             axios.get(targeturl, {params})
                 .then(res => $('#data').html(res.data));
         }
@@ -117,7 +118,10 @@
 
 
         // ========== end helper | begin filter handler ==========
-
+        $(document).on('click','#get-all', function(e){
+            e.preventDefault();
+            fetchStudents();
+        })
         let filterForm = $('#department-filter')
         // fetch filtered student list on submit
         filterForm.on('change',function(e){

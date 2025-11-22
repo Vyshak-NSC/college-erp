@@ -143,7 +143,9 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        $this->authorize('delete-student',$student);
+        $student->delete();
+        return redirect()->route('students.index'); 
     }
 
     public function bulkDelete(Request $request){
