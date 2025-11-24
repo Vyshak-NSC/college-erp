@@ -63,7 +63,7 @@ class StudentController extends Controller
 
             }
             $query->orderBy('semester','asc');
-            $students = $query->paginate($request->get('per_page', 10))
+            $students = $query->orderBy('id')->paginate($request->get('per_page', 10))
                               ->withQueryString();
             // return $students;
             return view('students._table-partial', compact('students'))->render();
@@ -141,11 +141,11 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy(Request $request, Student $student)
     {
         $this->authorize('delete-student',$student);
         $student->delete();
-        return redirect()->route('students.index'); 
+        return back()->with('success', 'Deleted student successfully'); 
     }
 
     public function bulkDelete(Request $request){
@@ -153,6 +153,9 @@ class StudentController extends Controller
         if(!empty($ids)){
             Student::whereIn('id',$ids)->delete();
         }
-        return back()->with('success', 'Deleted selected students');
+        if(count($ids)==1){
+            return back()->with('success', 'Student deleted successfully.');
+        }
+        return back()->with('success', 'Students deleted successfully.');
     }
 }

@@ -47,8 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
     Route::get('/staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
 
-    Route::delete('/students/bulk-delete', [StudentController::class, 'bulkDelete'])->name('students.bulk-delete');
-});
+    });
 
 // role:admin middleware applicable
 Route::middleware(['auth','admin'])->group(function(){
@@ -70,7 +69,9 @@ Route::middleware(['auth','admin'])->group(function(){
     Route::resource('staff', StaffController::class)
             ->except(['index','show']);
     Route::resource('programs', ProgramController::class);
-    Route::resource('students', StudentController::class);
+    Route::resource('students', StudentController::class)->whereNumber('student');
+    Route::delete('/students/bulk-delete', [StudentController::class, 'bulkDelete'])->name('students.bulk-delete');
+
 });
 
 

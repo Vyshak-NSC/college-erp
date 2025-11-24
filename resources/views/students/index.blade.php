@@ -17,7 +17,19 @@
                 </div>
             @endif
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <div class="p-4 text-gray-900 dark:text-gray-100">
+                    <div class="flex items-center gap-3 bg-gray-900 rounded p-2 mb-2">
+                        <div id="toolbox" class="flex gap-2 text-sm">
+                            <button id="delete" class="border border-gray-500 p-1 rounded">
+                                Delete
+                                <i class="fas fa-trash text-red-500 px-1"></i>
+                            </button>
+                            <button id="promote" class="border border-gray-500 p-1 rounded">
+                                Promote
+                                <i class="fas fa-level-up-alt"></i>
+                            </button>
+                        </div>
+                    </div>    
                     <form id="department-filter" method="GET" class="grid grid-cols-3 gap-4 p-2">
                         <!-- Department -->
                         <div class="col-span-1">
@@ -92,18 +104,18 @@
         // ========== begin helper functions ==========
         const url = "{{ route('students.index') }}" 
         
-        function getFilters(){
+        function getFilters(filled=true){
             return {
-                department : $('#department').val(),
-                program : $('#programs').val(),
-                semester : $('#semesters').val(),
+                department : filled ? $('#department').val() : '',
+                program :  filled ? $('#programs').val() : '',
+                semester : filled ? $('#semesters').val() : '',
                 per_page : $('#per_page').val() || 10,
-                search  : $('#search').val()
+                search  :  filled ? $('#search').val() : ''
             };
         }
         
         // get the student from url
-        function fetchStudents(params=[], targeturl = url){
+        function fetchStudents(params={}, targeturl = url){
             axios.get(targeturl, {params})
                 .then(res => $('#data').html(res.data));
         }
@@ -114,14 +126,21 @@
             // if param exist, refetch it
             // allows refecth if returned to page or refreshed
             fetchStudents(params);
+            
+            Object.entries(params).forEach(([key, value]) => {
+                $(`#${key}`).val(value);
+            });
         }
 
-
         // ========== end helper | begin filter handler ==========
+        
         $(document).on('click','#get-all', function(e){
             e.preventDefault();
+            let filters = getFilters(false)
+            history.pushState({},'',`${url}?${$.param(filters)}`);
             fetchStudents();
         })
+
         let filterForm = $('#department-filter')
         // fetch filtered student list on submit
         filterForm.on('change',function(e){
@@ -140,6 +159,19 @@
 
             fetchStudents(filters, href);
         })
+
+        $(document).on('click', '.delete-single', function(){
+            const studentId = $(this).data('id');
+
+            if(!confirm('Are you sure you want to delete this student?')) return;
+
+            $('input[name="select[]"]').prop('checked', false);
+            // Check only this student
+            $(`input[name="select[]"][value="${studentId}"]`).prop('checked', true);
+            // Submit bulk-delete form
+            $('#bulk-delete-form').submit();
+        });
+
     
         // check for pagination size changes
         $(document).on('change', '#per_page',()=>{
@@ -151,9 +183,10 @@
         });
 
         $('#search').on('input', () => {
-            $search_query = $('#search').val();
+            // $search_query = $('#search').val();
             let filters = getFilters();
-            filters = {...filters, search:$search_query};
+            // filters = {...filters, search:$search_query};
+            history.pushState({},'',`${url}?${$.param(filters)}`);
             fetchStudents(filters);
         })
 
@@ -180,9 +213,7 @@
         // check all checkboxes
         $(document).on('click', '#select-all', function () {
             const checked = $(this).prop('checked');
-            // if(checked){
                 $('input[name="select[]"]').prop('checked', checked).trigger('change');
-            // }
         });
 
         $(document).on('change','input[name="select[]"]', function(){
@@ -194,7 +225,11 @@
         })
 
         // enter select deletion
-        $(document).on('click', '#bulk-delete', function(){
+        $(document).on('click', '#delete', function(){
+            $('#cancel-delete').on('click',function(){
+                    $('#delete').data('submit-ready', false)
+                    $('.select').addClass('hidden')
+                })
             if($('#delete').data('submit-ready')){
                 $('#bulk-delete-form').submit()
             }else{
@@ -203,8 +238,19 @@
                 $('#delete')
                     .addClass('text-red-500')
                     .text(`Delete (${countSelected})`);
+                $('#toolbox').prepend('<button  id="cancel-delete" class="border border-gray-500 p-1 rounded">Cancel <i class="text-red-500 fas fa-times px-1"></i></button>')
             }
+        })
+        $(document).on('click','#cancel-delete', function(){
+            $('#delete').data('submit-ready',false);
+            $('.selector').addClass('hidden');
+            $('#delete')
+                .removeClass('text-red-500')
+                .html('Delete <i class="fas fa-trash text-red-500 px-1"></i>')
+            $(this).remove()
         })
         // ========== end bulk delete handler ==========
     });
 </script>
+
+

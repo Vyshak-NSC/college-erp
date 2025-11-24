@@ -1,14 +1,10 @@
 <div class="mb-5">
     <div class="flex items-center gap-2 gap-x-5">
-        <div id="bulk-delete"> 
-            <button id="delete">
-                <i class="fas fa-trash text-red-500"></i>
-            </button>
-        </div>
+        
         <div>
             <label for="per_page">Per page</label>
             <select id="per_page" name="per_page" 
-                class=" px-1 py-1 border shadow-sm w-14
+                class="px-1 py-1 border shadow-sm w-14 text-xs
                     border-gray-300 dark:border-gray-700 rounded-md 
                     bg-white dark:bg-gray-900 focus:outline-none 
                     dark:text-gray-300 dark:focus:ring-indigo-600
@@ -70,12 +66,7 @@
                             <a href="{{ route('students.edit', $student) }}" class="no-ajax mx-1 text-blue-400 hover:text-blue-200">Edit</a>
                         @endcan
                         @can('delete-student',$student)
-                            <form action="{{ route('students.destroy', $student) }}" method="POST"
-                                onsubmit="return confirm('Delete this department?')" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="mx-1 text-red-500 hover:text-red-200">Delete</button>
-                            </form>
+                            <a href="#" data-id="{{ $student->id }}" class="no-ajax delete-single mx-1 text-red-500 hover:text-red-200">Delete</a>
                         @endcan
                     </td>
                 </tr>
