@@ -1,7 +1,7 @@
 <div class="mb-5">
     <div class="flex items-center gap-2 gap-x-5">
         
-        <div>
+        <div class="-mb-1">
             <label for="per_page">Per page</label>
             <select id="per_page" name="per_page" 
                 class="px-1 py-1 border shadow-sm w-14 text-xs

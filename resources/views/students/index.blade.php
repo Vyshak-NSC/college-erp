@@ -20,11 +20,11 @@
                 <div class="p-4 text-gray-900 dark:text-gray-100">
                     <div class="flex items-center gap-3 bg-gray-900 rounded p-2 mb-2">
                         <div id="toolbox" class="flex gap-2 text-sm">
-                            <button id="delete" class="border border-gray-500 p-1 rounded">
+                            <button id="delete" class="border border-gray-500 p-1 rounded cursor-pointer">
                                 Delete
                                 <i class="fas fa-trash text-red-500 px-1"></i>
                             </button>
-                            <button id="promote" class="border border-gray-500 p-1 rounded">
+                            <button id="promote" class="border border-gray-500 p-1 rounded cursor-pointer">
                                 Promote
                                 <i class="fas fa-level-up-alt"></i>
                             </button>
@@ -218,20 +218,21 @@
                 $('input[name="select[]"]').prop('checked', checked).trigger('change');
         });
 
+        // handle selected
         $(document).on('change','input[name="select[]"]', function(){
             countSelected = $('input[name="select[]"]:checked').length;
             if(countSelected < $('#per_page').val()){
                 $('#select-all').prop('checked',false)
             }
-            $('#delete').text(`Delete (${countSelected})`)
+            if($('#delete').data('submit-ready')){
+                $('#delete').text(`Delete (${countSelected})`)
+            }else if($('#promote').data('submit-ready')){
+                $('#promote').text(`Promote (${countSelected})`)
+            }
         })
 
         // enter select deletion
         $(document).on('click', '#delete', function(){
-            $('#cancel-delete').on('click',function(){
-                    $('#delete').data('submit-ready', false)
-                    $('.select').addClass('hidden')
-                })
             if($('#delete').data('submit-ready')){
                 // $('#bulk-delete-form').submit()
                 bulkDelete()
@@ -244,15 +245,44 @@
                 $('#toolbox').prepend('<button  id="cancel-delete" class="border border-gray-500 p-1 rounded">Cancel <i class="text-red-500 fas fa-times px-1"></i></button>')
             }
         })
+        // ========== end bulk delete handler ==========
+        
+        // cancel button logic
         $(document).on('click','#cancel-delete', function(){
-            $('#delete').data('submit-ready',false);
+            // hide checkbox
             $('.selector').addClass('hidden');
-            $('#delete')
-                .removeClass('text-red-500')
-                .html('Delete <i class="fas fa-trash text-red-500 px-1"></i>')
+            $('input[name="select[]"]').prop('checked', false).trigger('change');
+            // if cancel-delete
+            if($('#delete').data('submit-ready')){
+                $('#delete')
+                    .removeClass('text-red-500')
+                    .html('Delete <i class="fas fa-trash text-red-500 px-1"></i>')
+                    $('#delete').data('submit-ready',false);
+            }
+            // if cancel-promote
+            else if($('#promote').data('submit-ready')){
+                $('#promote').data('submit-ready', false)
+                $('#promote')
+                    .html('Promote <i class="fas fa-alt-level-up text-red-500 px-1"></i>')
+            }
+
             $(this).remove()
         })
-        // ========== end bulk delete handler ==========
+        
+        // ========== begin promote handler ==========
+        $(document).on('click','#promote', function(){
+            if($('#delete').data('submit-ready')){
+                // $('#bulk-delete-form').submit()
+                bulkDelete()
+            }else{
+                $('#promote').data('submit-ready',true)
+                $('.selector.hidden').removeClass('hidden');
+                $('#promote')
+                    .text(`Promote (${countSelected})`);
+            
+            }
+            $('#toolbox').prepend('<button id="cancel-delete" class="border border-gray-500 p-1 rounded">Cancel <i class="text-red-500 fas fa-times px-1"></i></button>')
+        })
     });
 </script>
 
