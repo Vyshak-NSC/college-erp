@@ -143,13 +143,15 @@ class StudentController extends Controller
      */
     public function destroy(Request $request, Student $student)
     {
+        // dd($request->all());
         $this->authorize('delete-student',$student);
         $student->delete();
         return back()->with('success', 'Deleted student successfully'); 
     }
 
     public function bulkDelete(Request $request){
-        $ids = $request->input('select',[]);
+        // dd($request->all()); 
+        $ids = $request->input('ids',[]);
         if(!empty($ids)){
             Student::whereIn('id',$ids)->delete();
         }

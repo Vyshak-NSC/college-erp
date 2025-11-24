@@ -27,9 +27,6 @@
     {{ $students->links() }}
 </div>
 
-<form id="bulk-delete-form" action="{{ route('students.bulk-delete') }}" method="post">
-    @csrf
-    @method('DELETE')
     <table class="w-full text-center border-collapse table-fixed">
         <thead class="bg-gray-100 dark:bg-gray-700">
             <tr>
@@ -38,7 +35,7 @@
                 </td>
                 <th class="py-3 px-1 truncate w-10">#</th>
                 <th class="py-3 px-1 truncate">Name</th>
-                <th class="py-3 px-1 truncate">Register No</th>
+                <th class="py-3 px-1 truncate w-[10%] ">Register No</th>
                 <th class="py-3 px-1 truncate">Program</th>
                 <th class="py-3 px-1 truncate">Department</th>
                 <th class="py-3 px-1 truncate w-20">Semester</th>
@@ -59,14 +56,19 @@
                     <td class="py-3 px-1 truncate">{{ $student->department->name }}</td>
                     <td class="py-3 px-1 truncate">{{ $student->semester }}</td>
                     <td class="py-3 px-1 truncate">{{ $student->user->email }}</td>
-                    <td class="py-3 px-1 gap-3">
+                    <td class="py-3 px-1 truncate gap-1 flex justify-center">
                         <a href="{{ route('students.show', $student) }}" class="no-ajax mx-1 text-yellow-400 hover:text-yellow-200">View</a>
                         
                         @can('edit-student',$student)
                             <a href="{{ route('students.edit', $student) }}" class="no-ajax mx-1 text-blue-400 hover:text-blue-200">Edit</a>
                         @endcan
                         @can('delete-student',$student)
-                            <a href="#" data-id="{{ $student->id }}" class="no-ajax delete-single mx-1 text-red-500 hover:text-red-200">Delete</a>
+                            <form action="{{ route('students.destroy', $student) }}" method="POST"
+                                  onsubmit="return confirm('Delete this student?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-red-500 hover:underline">Delete</button>
+                            </form>
                         @endcan
                     </td>
                 </tr>
@@ -79,4 +81,3 @@
             @endforelse
         </tbody>
     </table>
-</form>

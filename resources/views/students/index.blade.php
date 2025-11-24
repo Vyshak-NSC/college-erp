@@ -120,6 +120,21 @@
                 .then(res => $('#data').html(res.data));
         }
 
+        function bulkDelete(){
+            let list = $('input[name="select[]"]:checked')
+                .map(function(){
+                        return $(this).val();
+                    })
+                .get()
+            axios.post('{{ route('students.bulk-delete') }}', {
+                ids:list,
+                _method:'DELETE'
+            })
+            .then(()=>{
+                window.location.reload()
+            })
+        }
+
         // get prior search query params if any 
         const params = Object.fromEntries(new URLSearchParams(window.location.search));
         if(Object.keys(params).length){
@@ -159,19 +174,6 @@
 
             fetchStudents(filters, href);
         })
-
-        $(document).on('click', '.delete-single', function(){
-            const studentId = $(this).data('id');
-
-            if(!confirm('Are you sure you want to delete this student?')) return;
-
-            $('input[name="select[]"]').prop('checked', false);
-            // Check only this student
-            $(`input[name="select[]"][value="${studentId}"]`).prop('checked', true);
-            // Submit bulk-delete form
-            $('#bulk-delete-form').submit();
-        });
-
     
         // check for pagination size changes
         $(document).on('change', '#per_page',()=>{
@@ -231,7 +233,8 @@
                     $('.select').addClass('hidden')
                 })
             if($('#delete').data('submit-ready')){
-                $('#bulk-delete-form').submit()
+                // $('#bulk-delete-form').submit()
+                bulkDelete()
             }else{
                 $('#delete').data('submit-ready',true)
                 $('.selector.hidden').removeClass('hidden');
